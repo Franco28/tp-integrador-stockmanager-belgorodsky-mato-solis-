@@ -1,7 +1,5 @@
--- StockManager / Team RCP
--- Motor: SQLite 3.37+ (archivos .db)
--- Todas las conexiones Python deben ejecutar: PRAGMA foreign_keys = ON;
--- El stock se calcula desde el historial: no se actualiza manualmente.
+-- Base de datos de StockManager.
+-- El stock se calcula a partir de las entradas y salidas.
 
 PRAGMA foreign_keys = ON;
 
@@ -66,8 +64,7 @@ CREATE INDEX IF NOT EXISTS idx_movimientos_producto_fecha
 CREATE INDEX IF NOT EXISTS idx_movimientos_usuario ON movimientos_stock(usuario_id);
 CREATE INDEX IF NOT EXISTS idx_movimientos_fecha ON movimientos_stock(creado_en DESC);
 
--- Un encargado no puede registrar movimientos, aunque se lo intente por SQL
--- usando su propio usuario. La app debe autorizar TODOS los demás cambios.
+-- Solo el administrador puede guardar movimientos.
 CREATE TRIGGER IF NOT EXISTS validar_nuevo_movimiento
 BEFORE INSERT ON movimientos_stock
 BEGIN
@@ -97,7 +94,7 @@ BEGIN
     END;
 END;
 
--- El historial es inmutable. Una corrección se registra con un movimiento inverso.
+-- Los movimientos guardados no se editan ni se borran.
 CREATE TRIGGER IF NOT EXISTS bloquear_edicion_movimiento
 BEFORE UPDATE ON movimientos_stock
 BEGIN
@@ -110,7 +107,7 @@ BEGIN
     SELECT RAISE(ABORT, 'Los movimientos historicos no se eliminan');
 END;
 
--- Conservamos el historial mediante baja logica de productos y usuarios.
+-- Los productos y usuarios se desactivan para conservar el historial.
 CREATE TRIGGER IF NOT EXISTS bloquear_borrado_producto
 BEFORE DELETE ON productos
 BEGIN
@@ -123,7 +120,7 @@ BEGIN
     SELECT RAISE(ABORT, 'Desactivar el usuario (activo=0), no eliminarlo');
 END;
 
--- Fuente unica de verdad del stock: las entradas y salidas historicas.
+-- Estas vistas muestran el stock calculado y los resúmenes.
 CREATE VIEW IF NOT EXISTS vw_inventario AS
 WITH existencias AS (
     SELECT producto_id,
