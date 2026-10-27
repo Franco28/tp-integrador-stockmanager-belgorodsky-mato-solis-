@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}Productos{% endblock %}
+{% block contenido %}
+<section class="page-heading">
+  <div>
+    <p class="eyebrow">Catálogo</p>
+    <h1>Productos</h1>
+    <p class="page-lead">Buscá artículos y consultá su disponibilidad.</p>
+  </div>
+  {% if g.usuario.rol.nombre == 'administrador' %}
+  <a class="button button--primary" href="{{ url_for('productos.nuevo') }}">＋ Nuevo producto</a>
+  {% endif %}
+</section>
+<form class="filter-panel" method="get">
+  <label class="search-field">Buscar producto
+    <input name="q" value="{{ q }}" maxlength="80" placeholder="Ingresá nombre o código">
+  </label>
+  <button class="button button--secondary" type="submit">Buscar</button>
+</form>
+<section class="panel table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Código</th><th>Nombre</th><th>Categoría</th><th>Precio (ARS)</th>
+        <th>Stock</th><th>Mínimo</th><th>Estado</th>
+        {% if g.usuario.rol.nombre == 'administrador' %}<th>Acciones</th>{% endif %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in productos %}
+      <tr>
+        <td class="cell-code">{{ p.codigo }}</td>
+        <td class="cell-primary">{{ p.nombre }}</td>
+        <td>{{ p.categoria }}</td>
+        <td>$ {{ p.precio_centavos|ars }}</td>
+        <td>{{ p.stock_actual }}</td>
+        <td>{{ p.stock_minimo }}</td>
+        <td><span class="stock-badge stock-badge--{{ p.estado_stock|lower|replace('_', '-') }}">{{ p.estado_stock|replace('_', ' ')|title }}</span></td>
+        {% if g.usuario.rol.nombre == 'administrador' %}
+        <td>
+          <div class="row-actions">
+            <a class="text-link" href="{{ url_for('productos.editar', producto_id=p.producto_id) }}">Editar</a>
+            <form method="post" action="{{ url_for('productos.desactivar', producto_id=p.producto_id) }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button class="button button--danger button--small" type="submit">Dar de baja</button>
+            </form>
+          </div>
+        </td>
+        {% endif %}
+      </tr>
+      {% else %}
+      <tr><td colspan="8"><div class="empty-state"><p>No se encontraron productos.</p></div></td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+<p class="helper-text">Se muestran hasta 500 registros. Los productos dados de baja no aparecen.</p>
+{% endblock %}
