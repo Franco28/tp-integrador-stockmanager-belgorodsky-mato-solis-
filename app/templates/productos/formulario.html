@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Editar' if producto else 'Nuevo' }} producto{% endblock %}
+{% block contenido %}
+<section class="form-page">
+  <div class="page-heading">
+    <div>
+      <p class="eyebrow">Catálogo</p>
+      <h1>{{ 'Editar' if producto else 'Nuevo' }} producto</h1>
+      <p class="page-lead">Completá los datos para mantener actualizado el inventario.</p>
+    </div>
+  </div>
+  <div class="panel form-panel">
+    {% if not categorias %}
+    <div class="empty-state">
+      <p>Primero necesitás crear una <a class="text-link" href="{{ url_for('categorias.listar') }}">categoría activa</a>.</p>
+    </div>
+    {% else %}
+    <form method="post" class="form-grid">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label>Código
+        <input name="codigo" maxlength="40" value="{{ producto.codigo if producto else '' }}" required>
+      </label>
+      <label>Nombre
+        <input name="nombre" maxlength="120" value="{{ producto.nombre if producto else '' }}" required>
+      </label>
+      <label class="field-span">Descripción
+        <textarea name="descripcion" maxlength="500">{{ producto.descripcion or '' if producto else '' }}</textarea>
+      </label>
+      <label>Categoría
+        <select name="categoria_id" required>
+          {% for c in categorias %}
+          <option value="{{ c.id }}" {% if producto and producto.categoria_id == c.id %}selected{% endif %}>{{ c.nombre }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>Precio (ARS)
+        <span class="field-hint">Hasta 2 decimales</span>
+        <input name="precio" inputmode="decimal" value="{{ '%0.2f'|format(producto.precio_centavos / 100) if producto else '0.00' }}" required>
+      </label>
+      <label>Stock mínimo
+        <input type="number" name="stock_minimo" min="0" value="{{ producto.stock_minimo if producto else 0 }}" required>
+      </label>
+      {% if not producto %}
+      <label>Stock inicial
+        <input type="number" name="stock_inicial" min="0" value="0" required>
+      </label>
+      {% endif %}
+      <div class="form-actions field-span">
+        <a class="button button--quiet-dark" href="{{ url_for('productos.listar') }}">Cancelar</a>
+        <button class="button button--primary" type="submit">Guardar producto</button>
+      </div>
+    </form>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
