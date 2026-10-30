@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Nuevo movimiento{% endblock %}
+{% block contenido %}
+<section class="form-page">
+  <div class="page-heading">
+    <div>
+      <p class="eyebrow">Inventario</p>
+      <h1>Registrar movimiento</h1>
+      <p class="page-lead">Anotá una entrada o salida para actualizar las existencias.</p>
+    </div>
+  </div>
+  <div class="panel form-panel">
+    {% if not productos %}
+    <div class="empty-state">
+      <p>No hay productos activos. <a class="text-link" href="{{ url_for('productos.nuevo') }}">Crear producto</a>.</p>
+    </div>
+    {% else %}
+    <form method="post" class="stack-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label>Producto
+        <select name="producto_id" required>
+          {% for p in productos %}<option value="{{ p.id }}">{{ p.codigo }} — {{ p.nombre }}</option>{% endfor %}
+        </select>
+      </label>
+      <label>Tipo de movimiento
+        <select name="tipo">
+          <option value="ENTRADA">Entrada</option>
+          <option value="SALIDA">Salida</option>
+        </select>
+      </label>
+      <label>Cantidad
+        <input type="number" name="cantidad" min="1" max="1000000000" required>
+      </label>
+      <label>Observación
+        <textarea name="observacion" maxlength="500" placeholder="Opcional"></textarea>
+      </label>
+      <div class="form-actions">
+        <a class="button button--quiet-dark" href="{{ url_for('movimientos.listar') }}">Cancelar</a>
+        <button class="button button--primary" type="submit">Guardar movimiento</button>
+      </div>
+    </form>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
