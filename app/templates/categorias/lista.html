@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}Categorías{% endblock %}
+{% block contenido %}
+<section class="page-heading">
+  <div>
+    <p class="eyebrow">Organización</p>
+    <h1>Categorías</h1>
+    <p class="page-lead">Agrupá productos para encontrarlos más fácilmente.</p>
+  </div>
+</section>
+{% if g.usuario.rol.nombre == 'administrador' %}
+<section class="panel">
+  <div class="section-heading">
+    <div>
+      <h2>Agregar categoría</h2>
+      <p class="helper-text">Las categorías activas aparecen en los formularios de productos.</p>
+    </div>
+  </div>
+  <form method="post" action="{{ url_for('categorias.nuevo') }}" class="inline-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label>Nombre
+      <input name="nombre" maxlength="80" placeholder="Ej. Bebidas" required>
+    </label>
+    <label>Descripción
+      <input name="descripcion" maxlength="500" placeholder="Descripción opcional">
+    </label>
+    <button class="button button--primary" type="submit">Agregar categoría</button>
+  </form>
+</section>
+{% endif %}
+<section class="panel table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th>Estado</th>
+        {% if g.usuario.rol.nombre == 'administrador' %}<th>Acciones</th>{% endif %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in categorias %}
+      <tr>
+        <td class="cell-primary">{{ c.nombre }}</td>
+        <td>{{ c.descripcion or '—' }}</td>
+        <td><span class="status-badge {{ 'status-badge--active' if c.activa else 'status-badge--inactive' }}">{{
+            'Activa' if c.activa else 'Inactiva' }}</span></td>
+        {% if g.usuario.rol.nombre == 'administrador' %}
+        <td>
+          {% if c.activa %}
+          <form method="post" action="{{ url_for('categorias.desactivar', categoria_id=c.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="button button--danger button--small" type="submit">Desactivar</button>
+          </form>
+          {% else %}<span class="helper-text">—</span>{% endif %}
+        </td>
+        {% endif %}
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="4">
+          <div class="empty-state">
+            <p>No hay categorías cargadas.</p>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}
