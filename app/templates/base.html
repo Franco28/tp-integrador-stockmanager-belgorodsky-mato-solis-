@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#12313b">
+  <title>{% block title %}StockManager{% endblock %} | Team RCP</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="{{ url_for('main.inicio') }}" aria-label="StockManager, ir al inicio">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span class="brand-copy">
+          <strong>StockManager</strong>
+          <small>Control de inventario</small>
+        </span>
+      </a>
+      {% if g.usuario %}
+      <nav class="main-nav" aria-label="Menú principal">
+        <a href="{{ url_for('main.inicio') }}" {% if request.endpoint == 'main.inicio' %}aria-current="page"{% endif %}>Inicio</a>
+        <a href="{{ url_for('productos.listar') }}" {% if request.endpoint and request.endpoint.startswith('productos.') %}aria-current="page"{% endif %}>Productos</a>
+        <a href="{{ url_for('categorias.listar') }}" {% if request.endpoint and request.endpoint.startswith('categorias.') %}aria-current="page"{% endif %}>Categorías</a>
+        <a href="{{ url_for('movimientos.listar') }}" {% if request.endpoint and request.endpoint.startswith('movimientos.') %}aria-current="page"{% endif %}>Movimientos</a>
+        <a href="{{ url_for('reportes.inicio') }}" {% if request.endpoint and request.endpoint.startswith('reportes.') %}aria-current="page"{% endif %}>Reportes</a>
+        {% if g.usuario.rol.nombre == 'administrador' %}
+        <a href="{{ url_for('usuarios.listar') }}" {% if request.endpoint and request.endpoint.startswith('usuarios.') %}aria-current="page"{% endif %}>Usuarios</a>
+        {% endif %}
+      </nav>
+      <div class="user-menu">
+        <span class="user-avatar" aria-hidden="true">{{ g.usuario.nombre[:1]|upper }}</span>
+        <span class="user-details">
+          <strong>{{ g.usuario.nombre }}</strong>
+          <small>{{ g.usuario.rol.nombre|capitalize }}</small>
+        </span>
+        <form method="post" action="{{ url_for('auth.logout') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button class="button button--quiet" type="submit">Salir</button>
+        </form>
+      </div>
+      {% endif %}
+    </div>
+  </header>
+  <main class="page-shell">
+    {% with mensajes = get_flashed_messages(with_categories=true) %}
+      {% for tipo, mensaje in mensajes %}
+      <div role="status" class="notice notice--{{ tipo }}">{{ mensaje }}</div>
+      {% endfor %}
+    {% endwith %}
+    {% block contenido %}{% endblock %}
+  </main>
+  <footer class="site-footer">
+    <span>StockManager</span>
+    <span>Trabajo Práctico Integrador · Team RCP</span>
+  </footer>
+</body>
+</html>

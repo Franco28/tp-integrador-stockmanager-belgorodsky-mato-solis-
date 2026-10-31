@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Ingresar{% endblock %}
+{% block contenido %}
+<div class="login-layout">
+  <section class="login-card">
+    <p class="eyebrow">Bienvenido</p>
+    <h1>Ingresar a StockManager</h1>
+    <p class="page-lead">Usá tu cuenta para consultar y administrar el inventario.</p>
+    <form method="post" class="stack-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label>Usuario
+        <input name="usuario" autocomplete="username" maxlength="32" placeholder="Tu nombre de usuario" required>
+      </label>
+      <label>Contraseña
+        <input type="password" name="password" autocomplete="current-password" placeholder="Tu contraseña" required>
+      </label>
+      <button class="button button--primary button--wide" type="submit">Iniciar sesión</button>
+    </form>
+  </section>
+  <aside class="login-aside">
+    <span class="login-aside-mark" aria-hidden="true">S</span>
+    <h2>Tu inventario, más claro.</h2>
+    <p>Consultá productos, registrá movimientos y revisá el stock desde un solo lugar.</p>
+  </aside>
+</div>
+{% endblock %}
