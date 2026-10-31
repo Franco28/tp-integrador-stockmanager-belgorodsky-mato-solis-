@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}Reportes{% endblock %}
+{% block contenido %}
+<section class="page-heading">
+  <div>
+    <p class="eyebrow">Consultas y descargas</p>
+    <h1>Reportes de inventario</h1>
+    <p class="page-lead">Consultá el estado actual o descargá los datos en formato CSV.</p>
+  </div>
+  <div class="heading-actions">
+    <a class="button button--secondary" href="{{ url_for('reportes.exportar', tipo='inventario') }}">Descargar inventario</a>
+    <a class="button button--primary" href="{{ url_for('reportes.exportar', tipo='movimientos') }}">Descargar movimientos</a>
+  </div>
+</section>
+<div class="stats-grid stats-grid--reports">
+  <article class="stat-card">
+    <span class="stat-label">Productos</span><strong>{{ resumen.total_productos }}</strong>
+    <span class="stat-foot">En el inventario</span>
+  </article>
+  <article class="stat-card stat-card--blue">
+    <span class="stat-label">Unidades</span><strong>{{ resumen.total_unidades }}</strong>
+    <span class="stat-foot">Disponibles</span>
+  </article>
+  <article class="stat-card stat-card--amber">
+    <span class="stat-label">Stock bajo</span><strong>{{ resumen.productos_stock_bajo }}</strong>
+    <span class="stat-foot">Para revisar</span>
+  </article>
+  <article class="stat-card stat-card--green">
+    <span class="stat-label">Valor estimado</span>
+    <strong class="stat-money">$ {{ resumen.valor_inventario_centavos|ars }}</strong>
+    <span class="stat-foot">A precio de lista</span>
+  </article>
+</div>
+<section class="panel table-wrap">
+  <div class="section-heading">
+    <div><p class="eyebrow">Vista previa</p><h2>Inventario actual</h2></div>
+  </div>
+  <table>
+    <thead><tr><th>Código</th><th>Producto</th><th>Stock</th><th>Estado</th></tr></thead>
+    <tbody>
+      {% for p in inventario %}
+      <tr>
+        <td class="cell-code">{{ p.codigo }}</td>
+        <td class="cell-primary">{{ p.nombre }}</td>
+        <td>{{ p.stock_actual }}</td>
+        <td><span class="stock-badge stock-badge--{{ p.estado_stock|lower|replace('_', '-') }}">{{ p.estado_stock|replace('_', ' ')|title }}</span></td>
+      </tr>
+      {% else %}
+      <tr><td colspan="4"><div class="empty-state"><p>No hay datos para mostrar.</p></div></td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}
