@@ -286,55 +286,55 @@ La separación en módulos permite evitar que toda la aplicación quede concentr
 
 ## Instalación
 
-### 1. Clonar el repositorio
+Los siguientes comandos se ejecutan desde la carpeta raíz del proyecto.
+
+### 1. Crear y activar un entorno virtual
 
 ```bash
-git clone https://github.com/Franco28/tp-integrador-stockmanager-belgorodsky-mato-solis-
-cd StockManager
-```
-
-### 2. Crear un entorno virtual
-
-```bash
-python -m venv .venv
-```
-
-### 3. Activar el entorno virtual
-
-#### Windows
-
-```bash
-.\.venv\Scripts\activate
-```
-
-#### Linux / macOS
-
-```bash
+python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-### 4. Instalar dependencias
+En Windows PowerShell, activar el entorno con:
 
-```bash
-python -m pip install -r requirements.txt
+```powershell
+.venv\Scripts\Activate.ps1
 ```
 
-### 5. Ejecutar la aplicación
-
-El comando definitivo dependerá de la estructura implementada en el proyecto.
-
-Por ejemplo:
+### 2. Instalar las dependencias
 
 ```bash
-python run.py
+python -m pip install -r requerimiento.txt
 ```
+
+### 3. Preparar la base de datos
+
+Si se necesita crear o actualizar la base de datos, ejecutar:
+
+```bash
+python3 scripts/inicializar_db.py
+```
+
+El script trabaja sobre `instance/StockManager.db`. Si se desea conservar la base de datos incluida en el repositorio, no ejecutar este paso.
+
+### 4. Iniciar Flask
+
+El comando previsto es:
+
+```bash
+flask --app 'app:create_app' run --debug
+```
+
+Sin embargo, la aplicación todavía no arranca con la versión actual: las rutas importan `app/security.py`, archivo que no está incluido. Después de completar ese módulo, Flask quedará disponible en `http://127.0.0.1:5000`.
+
+También faltan algunas plantillas para utilizar todas las secciones, por lo que podrían aparecer errores al abrir esas rutas incluso después de resolver el inicio de sesión.
 
 ## Requisitos
 
 - Python 3.10 o superior.
 - Gestor de paquetes `pip`.
 - Entorno virtual recomendado.
-- Dependencias especificadas en `requirements.txt`.
+- Dependencias especificadas en `requerimiento.txt`.
 
 ## Criterios generales de calidad
 
