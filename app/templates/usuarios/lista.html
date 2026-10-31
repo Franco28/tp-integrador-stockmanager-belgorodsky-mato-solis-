@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}Usuarios{% endblock %}
+{% block contenido %}
+<section class="page-heading">
+  <div>
+    <p class="eyebrow">Administración</p>
+    <h1>Usuarios</h1>
+    <p class="page-lead">Administrá las cuentas y los permisos de acceso.</p>
+  </div>
+</section>
+<section class="panel">
+  <div class="section-heading">
+    <div><h2>Nueva cuenta</h2><p class="helper-text">La contraseña debe tener al menos 12 caracteres.</p></div>
+  </div>
+  <form method="post" action="{{ url_for('usuarios.nuevo') }}" class="form-grid">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label>Nombre<input name="nombre" maxlength="120" required></label>
+    <label>Usuario<input name="usuario" maxlength="32" required></label>
+    <label>Rol
+      <select name="rol_id">
+        {% for r in roles %}<option value="{{ r.id }}">{{ r.nombre|capitalize }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>Contraseña<input type="password" name="password" minlength="12" autocomplete="new-password" required></label>
+    <label>Confirmar contraseña<input type="password" name="confirmacion" minlength="12" autocomplete="new-password" required></label>
+    <div class="form-actions field-span"><button class="button button--primary" type="submit">Crear usuario</button></div>
+  </form>
+</section>
+<section class="panel table-wrap">
+  <div class="section-heading"><div><h2>Cuentas existentes</h2></div></div>
+  <table>
+    <thead><tr><th>Usuario</th><th>Nombre</th><th>Rol</th><th>Estado</th><th>Acción</th></tr></thead>
+    <tbody>
+      {% for u in usuarios %}
+      <tr>
+        <td class="cell-code">{{ u.usuario }}</td>
+        <td class="cell-primary">{{ u.nombre }}</td>
+        <td>{{ u.rol.nombre|capitalize }}</td>
+        <td><span class="status-badge {{ 'status-badge--active' if u.activo else 'status-badge--inactive' }}">{{ 'Activo' if u.activo else 'Inactivo' }}</span></td>
+        <td>
+          {% if u.activo and u.id != g.usuario.id %}
+          <form method="post" action="{{ url_for('usuarios.desactivar', usuario_id=u.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="button button--danger button--small" type="submit">Desactivar</button>
+          </form>
+          {% else %}<span class="helper-text">—</span>{% endif %}
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5"><div class="empty-state"><p>No hay cuentas para mostrar.</p></div></td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}
