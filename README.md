@@ -115,7 +115,6 @@ StockManager/
 ├── database/schema.sql      # Estructura de la base de datos
 ├── scripts/                 # Inicialización y primer administrador
 ├── docs/                    # Análisis y documentación
-├── tests/                   # Pruebas del sistema
 ├── instance/                # Base de datos local (se genera al iniciar)
 ├── requirements.txt
 ├── wsgi.py
@@ -127,16 +126,6 @@ StockManager/
 Los movimientos tienen un tipo (**ENTRADA** o **SALIDA**) y una cantidad positiva. La vista `vw_inventario` calcula el stock de cada producto sumando las entradas y restando las salidas. Una restricción en la base de datos evita registrar salidas cuando las unidades disponibles son insuficientes.
 
 Las contraseñas se almacenan mediante un hash y las funciones administrativas verifican el rol del usuario. Los formularios incluyen un token para evitar envíos no autorizados desde otros sitios.
-
-## Pruebas
-
-Con el entorno virtual activo y las dependencias instaladas:
-
-```bash
-python -m unittest discover -s tests -v
-```
-
-Las pruebas cubren reglas del stock, persistencia y recorridos principales de la aplicación. También se recomienda hacer una prueba manual de las pantallas con ambas clases de usuario.
 
 ## Documentación y metodología
 
