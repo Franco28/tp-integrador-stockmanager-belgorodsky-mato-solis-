@@ -32,12 +32,20 @@ def _normalizar_busqueda(q: str) -> str:
 @login_requerido
 def listar():
     q = (request.args.get("q") or "").strip()[:80]
+    categoria = (request.args.get("categoria") or "").strip()
+    try:
+        categoria_id = entero(categoria, "Categoría", 1) if categoria else 0
+    except ValueError:
+        abort(400, description="Filtro de categoría inválido")
     datos = db.session.execute(text("""
         SELECT * FROM vw_inventario
         WHERE (:q = '' OR codigo LIKE :busqueda ESCAPE '\\' OR nombre LIKE :busqueda ESCAPE '\\')
+          AND (:categoria_id = 0 OR categoria_id = :categoria_id)
         ORDER BY nombre LIMIT 500
-    """), {"q": q, "busqueda": f"%{_normalizar_busqueda(q)}%"}).mappings().all()
-    return render_template("productos/lista.html", productos=datos, q=q)
+    """), {"q": q, "busqueda": f"%{_normalizar_busqueda(q)}%", "categoria_id": categoria_id}).mappings().all()
+    categorias = db.session.scalars(select(Categoria).order_by(Categoria.nombre)).all()
+    return render_template("productos/lista.html", productos=datos, q=q,
+                           categorias=categorias, categoria_id=categoria_id)
 
 
 @bp.route("/nuevo", methods=["GET", "POST"])
@@ -92,6 +100,15 @@ def editar(producto_id):
             db.session.rollback()
             flash("No se pudo modificar: código duplicado o datos inválidos", "error")
     return render_template("productos/formulario.html", producto=producto, categorias=_categorias())
+
+
+@bp.get("/<int:producto_id>/confirmar-baja")
+@administrador_requerido
+def confirmar_baja(producto_id):
+    producto = db.session.get(Producto, producto_id)
+    if producto is None or producto.activo != 1:
+        abort(404)
+    return render_template("productos/confirmar_baja.html", producto=producto)
 
 
 @bp.post("/<int:producto_id>/desactivar")

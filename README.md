@@ -1,370 +1,159 @@
-## Descripción del proyecto
+# StockManager
 
-**StockManager** es un sistema de gestión de inventario orientado a organizaciones que necesitan administrar productos y controlar las existencias disponibles de manera centralizada.
+**Trabajo Práctico Integrador — Análisis y Metodologías de Sistemas**  
+Carrera: Analista de Sistemas · Escuela Da Vinci
 
-El sistema busca reducir los errores derivados de registros manuales y facilitar el acceso a información actualizada sobre productos, stock y movimientos de inventario.
+StockManager es una aplicación web para registrar productos, controlar las existencias y consultar los movimientos del inventario. El objetivo es mantener la información centralizada y reducir los errores asociados a registros manuales.
 
-El desarrollo se realiza de manera incremental, utilizando **Scrum** como marco de trabajo y **Trello** como herramienta para la organización y seguimiento de las Historias de Usuario.
+El proyecto fue desarrollado en Python y se organiza mediante historias de usuario y Sprints, siguiendo los contenidos de la materia.
 
-## Objetivo general
+## Funcionalidades
 
-Desarrollar un sistema funcional de gestión de inventario que permita administrar de manera centralizada los productos y controlar las existencias disponibles, facilitando el acceso a la información y reduciendo errores en la gestión del stock.
+- Inicio y cierre de sesión con dos roles: **administrador** y **encargado**.
+- Alta, consulta, búsqueda, modificación y baja lógica de productos.
+- Gestión de categorías y stock mínimo por producto.
+- Registro de entradas y salidas de unidades.
+- Validación para evitar salidas superiores al stock disponible.
+- Historial de movimientos, resumen de inventario y alertas de stock bajo.
+- Exportación de inventario y movimientos a CSV.
+- Persistencia de la información con SQLite.
 
-## Objetivos específicos
-
-- Centralizar la información correspondiente a los productos.
-- Permitir altas, bajas, modificaciones y consultas de productos.
-- Mantener actualizado el stock disponible.
-- Registrar movimientos de entrada y salida.
-- Identificar productos con stock insuficiente.
-- Facilitar la búsqueda y consulta de productos.
-- Reducir errores derivados de registros manuales.
-- Brindar información actualizada que facilite la toma de decisiones.
-- Mantener la persistencia de la información del inventario.
-- Permitir el acceso al sistema mediante autenticación de usuarios.
-
-## Alcance
-
-Para el primer Producto Mínimo Viable (**MVP**), el sistema contempla las siguientes funcionalidades:
-
-- Alta de productos.
-- Consulta de productos.
-- Modificación de información de productos.
-- Baja de productos.
-- Búsqueda de productos.
-- Registro de entradas de stock.
-- Registro de salidas de stock.
-- Consulta de stock disponible.
-- Detección de productos con stock mínimo.
-- Consulta del historial de movimientos de inventario.
-- Persistencia de los datos.
-- Inicio de sesión de usuarios.
-
-El alcance se encuentra enfocado específicamente en la gestión del inventario. Funcionalidades correspondientes a otros dominios de negocio, como ventas, facturación, compras o gestión contable, no forman parte del MVP actual.
-
-## Actores del sistema
-
-Durante el análisis del sistema se identificaron dos actores externos principales.
-
-### Administrador
-
-El administrador puede realizar operaciones de gestión sobre los productos y el inventario, entre ellas:
-
-- Registrar productos.
-- Modificar productos.
-- Eliminar productos.
-- Registrar entradas de stock.
-- Registrar salidas de stock.
-- Consultar información de productos.
-- Consultar stock disponible.
-- Consultar alertas de bajo stock.
-- Consultar movimientos de inventario.
-
-### Encargado
-
-El encargado utiliza el sistema principalmente para realizar consultas relacionadas con el inventario.
-
-Entre sus acciones se encuentran:
-
-- Consultar productos.
-- Consultar stock disponible.
-- Consultar productos con bajo stock.
-- Consultar movimientos de inventario.
-
-## Metodología de trabajo
-
-El proyecto se desarrolla utilizando un enfoque ágil basado en **Scrum**.
-
-## Gestión del proyecto
-
-La organización de tareas se realiza utilizando **Trello**.
-
-El tablero se encuentra dividido en las siguientes columnas:
-
-1. **Product Backlog**
-2. **Sprint Backlog (To Do)**
-3. **In Progress**
-4. **Code Review / Testing**
-5. **Done**
-
-### Tablero Trello
-
-https://trello.com/b/D6cUCTrH/team-rcp-gestor-de-inventario-tp-integrador
+El **administrador** puede modificar productos, categorías, usuarios y movimientos. El **encargado** solo puede consultar productos, categorías, movimientos y reportes. Las operaciones de ventas, compras y facturación quedan fuera del alcance de este trabajo.
 
 ## Tecnologías
 
-El proyecto se desarrolla utilizando las tecnologías trabajadas durante la cursada.
+- **Python 3.10 o superior** y **Flask** para la aplicación web.
+- **Flask-SQLAlchemy** y **SQLite 3.37 o superior** para persistencia.
+- **Jinja2, HTML y CSS** para las páginas del sistema.
+- **Trello** para organizar las historias de usuario.
 
-### Backend
+No se utilizan servicios externos ni una arquitectura de microservicios: es una única aplicación organizada en módulos mediante Blueprints, como se trabajó en las clases.
 
-- Python
-- Flask
+## Instalación y puesta en marcha
 
-### Persistencia
+Los comandos se ejecutan desde la carpeta raíz del proyecto.
 
-- SQLite
-- SQLAlchemy / Flask-SQLAlchemy
-
-### Presentación
-
-- HTML
-- Jinja2
-- CSS
-
-### Comunicación HTTP
-
-El sistema puede utilizar los métodos HTTP convencionales de acuerdo con las operaciones realizadas:
-
-| Operación | Método HTTP |
-|---|---|
-| Consultar información | `GET` |
-| Crear información | `POST` |
-| Actualizar información | `PUT` / `PATCH` |
-| Eliminar información | `DELETE` |
-
-Estas operaciones se corresponden con el modelo CRUD utilizado para la gestión de productos.
-
-## Persistencia de datos
-
-La información del inventario debe mantenerse almacenada independientemente de la ejecución de la aplicación.
-
-La persistencia contempla principalmente información correspondiente a:
-
-- Productos.
-- Stock disponible.
-- Movimientos de inventario.
-- Usuarios del sistema.
-
-El uso de una base de datos permite conservar la información luego de cerrar y volver a ejecutar la aplicación.
-
-## Gestión de productos
-
-Los productos constituyen una de las entidades principales del sistema.
-
-De manera general, cada producto debe disponer de información suficiente para permitir su identificación y administración, incluyendo datos como:
-
-- Identificador.
-- Código.
-- Nombre.
-- Precio.
-- Stock disponible.
-- Stock mínimo.
-- Categoría, cuando corresponda.
-
-El sistema debe permitir realizar las operaciones CRUD correspondientes:
-
-- **Create:** registrar un producto.
-- **Read:** consultar uno o más productos.
-- **Update:** modificar un producto existente.
-- **Delete:** eliminar un producto.
-
-## Gestión del stock
-
-El sistema permite registrar movimientos que afectan las existencias de los productos.
-
-### Entrada de stock
-
-Una entrada representa el ingreso de unidades de un producto al inventario.
-
-Al registrar una entrada, la cantidad disponible del producto debe incrementarse.
-
-### Salida de stock
-
-Una salida representa la disminución de unidades disponibles.
-
-El sistema debe validar que exista stock suficiente antes de realizar la operación.
-
-### Stock mínimo
-
-El sistema permite identificar aquellos productos cuya cantidad disponible se encuentra por debajo del nivel mínimo establecido.
-
-Esta funcionalidad permite detectar productos que requieren reposición.
-
-## Movimientos de inventario
-
-Los movimientos permiten mantener trazabilidad sobre las modificaciones realizadas al stock.
-
-Un movimiento puede representar:
-
-- Entrada de unidades.
-- Salida de unidades.
-
-El historial de movimientos permite consultar las operaciones realizadas sobre el inventario y conocer cómo se modificaron las existencias de los productos.
-
-## Autenticación
-
-El sistema contempla autenticación de usuarios para restringir el acceso a las funcionalidades correspondientes.
-
-El flujo general consiste en:
-
-1. El usuario ingresa sus credenciales.
-2. El sistema verifica la información proporcionada.
-3. Si las credenciales son válidas, se inicia la sesión.
-4. Si las credenciales son incorrectas, el acceso es rechazado.
-5. Las funcionalidades protegidas solo pueden utilizarse con una sesión activa.
-
-Por razones de seguridad, las contraseñas no deben almacenarse en texto plano. Deben almacenarse mediante mecanismos de hashing.
-
-## Arquitectura general
-
-El sistema se plantea como una aplicación web desarrollada con Flask.
-
-De forma conceptual, la interacción sigue el ciclo:
-
-```text
-Usuario
-   ↓
-Interfaz Web
-   ↓
-Flask
-   ↓
-Lógica del sistema
-   ↓
-Persistencia de datos
-   ↓
-SQLite / SQLAlchemy
-```
-
-Flask recibe las solicitudes realizadas por los usuarios, ejecuta la lógica correspondiente y devuelve una respuesta.
-
-La información persistente es gestionada mediante la capa de acceso a datos.
-
-## Análisis del sistema
-
-Durante el desarrollo se utilizan diferentes herramientas de análisis y modelado vistas durante la materia.
-
-Entre ellas se encuentran:
-
-- Diagrama de Contexto.
-- Diagramas de Flujo de Datos (DFD).
-- Diccionario de Datos.
-- Diagrama Entidad-Relación (DER).
-- Historias de Usuario.
-- Criterios de aceptación.
-- Modelado estructurado.
-- Modelado orientado a objetos.
-
-Estos modelos permiten analizar el sistema desde diferentes perspectivas y mantener coherencia entre requisitos, procesos, información y posterior implementación.
-
-## Diagrama de contexto
-
-El Diagrama de Contexto representa a **StockManager** como un único proceso y permite visualizar su interacción con las entidades externas.
-
-Los actores identificados son:
-
-- Administrador.
-- Encargado.
-
-El diagrama permite delimitar el alcance del sistema y establecer qué información ingresa y qué respuestas devuelve StockManager.
-
-## Estructura del proyecto
-
-La estructura podrá evolucionar durante el desarrollo según las necesidades del sistema.
-
-Una organización general compatible con lo trabajado durante la cursada es:
-
-```text
-StockManager/
-│
-├── app/
-│   ├── __init__.py
-│   ├── models/
-│   ├── routes/
-│   ├── services/
-│   ├── templates/
-│   └── static/
-│
-├── instance/
-│
-├── .gitignore
-├── requirements.txt
-├── README.md
-└── run.py
-```
-
-La separación en módulos permite evitar que toda la aplicación quede concentrada en un único archivo y facilita su mantenimiento.
-
-## Instalación
-
-Los siguientes comandos se ejecutan desde la carpeta raíz del proyecto.
-
-### 1. Crear y activar un entorno virtual
+### 1. Crear el entorno virtual
 
 ```bash
-python3 -m venv .venv
+python -m venv .venv
+```
+
+Activación en Windows (PowerShell):
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
+
+En Linux o macOS:
+
+```bash
 source .venv/bin/activate
 ```
 
-En Windows PowerShell, activar el entorno con:
-
-```powershell
-.venv\Scripts\Activate.ps1
-```
-
-### 2. Instalar las dependencias
+### 2. Instalar dependencias
 
 ```bash
-python -m pip install -r requerimiento.txt
+python -m pip install -r requirements.txt
 ```
 
-### 3. Preparar la base de datos
-
-Si se necesita crear o actualizar la base de datos, ejecutar:
+### 3. Inicializar la base de datos
 
 ```bash
-python3 scripts/inicializar_db.py
+python scripts/inicializar_db.py
 ```
 
-El script trabaja sobre `instance/StockManager.db`. Si se desea conservar la base de datos incluida en el repositorio, no ejecutar este paso.
+El script crea `instance/StockManager.db` con las tablas, restricciones, vistas y los roles. Se puede volver a ejecutar sin borrar los registros existentes.
 
-### 4. Iniciar Flask
-
-El comando previsto es:
+### 4. Crear la primera cuenta administradora
 
 ```bash
-flask --app 'app:create_app' run --debug
+python scripts/crear_admin.py
 ```
 
-Sin embargo, la aplicación todavía no arranca con la versión actual: las rutas importan `app/security.py`, archivo que no está incluido. Después de completar ese módulo, Flask quedará disponible en `http://127.0.0.1:5000`.
+El programa solicita nombre, usuario y contraseña (mínimo 12 caracteres). **El proyecto no incluye usuarios ni contraseñas predeterminadas.**
 
-También faltan algunas plantillas para utilizar todas las secciones, por lo que podrían aparecer errores al abrir esas rutas incluso después de resolver el inicio de sesión.
+### 5. Ejecutar Flask
 
-## Requisitos
+```bash
+flask --app wsgi run --debug
+```
 
-- Python 3.10 o superior.
-- Gestor de paquetes `pip`.
-- Entorno virtual recomendado.
-- Dependencias especificadas en `requerimiento.txt`.
+Abrir **http://127.0.0.1:5000** en el navegador e iniciar sesión con la cuenta creada. `--debug` se usa solo durante el desarrollo local.
 
-## Criterios generales de calidad
+## Uso básico
 
-Durante el desarrollo se busca mantener:
+1. El administrador inicia sesión y crea al menos una **categoría**.
+2. Registra un **producto**, indicando código, nombre, categoría, precio, stock mínimo y, si corresponde, stock inicial.
+3. Desde **Movimientos** registra entradas y salidas. El stock se calcula automáticamente a partir de esos registros.
+4. Consulta el inventario desde **Productos** o **Inicio** y verifica las alertas de bajo stock.
+5. Desde **Reportes** puede consultar los datos y descargar archivos CSV.
+6. El administrador puede crear cuentas de tipo encargado, para permitir consultas sin autorización para modificar datos.
 
-- Código claro y legible.
-- Separación de responsabilidades.
-- Validación de los datos ingresados.
-- Manejo adecuado de errores.
-- Persistencia consistente.
-- Seguridad en el almacenamiento de credenciales.
-- Trazabilidad entre requisitos y funcionalidades.
-- Pruebas de las funcionalidades implementadas.
-- Actualización continua del tablero Trello.
-- Documentación coherente con el estado actual del sistema.
+El producto se da de baja en lugar de borrarse físicamente para conservar sus movimientos anteriores. Antes de la baja se muestra una página de confirmación.
 
-## Estado del proyecto
+Para una explicación paso a paso, consultar [Manual de usuario](docs/MANUAL_DE_USUARIO.md).
 
-El proyecto se encuentra en desarrollo incremental.
+## Estructura principal
 
-Las funcionalidades se incorporan progresivamente de acuerdo con los Sprints definidos por el equipo y las entregas establecidas durante la cursada.
+```text
+StockManager/
+├── app/
+│   ├── auth/                 # Inicio y cierre de sesión
+│   ├── categorias/           # Gestión de categorías
+│   ├── main/                 # Resumen del inventario
+│   ├── movimientos/          # Entradas, salidas e historial
+│   ├── productos/            # Gestión de productos
+│   ├── reportes/             # Consultas y CSV
+│   ├── usuarios/             # Administración de cuentas
+│   ├── static/css/           # Estilos
+│   ├── templates/            # Páginas HTML con Jinja2
+│   ├── models.py             # Tablas representadas como clases
+│   ├── security.py           # Sesiones, permisos y formularios
+│   ├── validaciones.py       # Validación de datos
+│   └── __init__.py           # Configuración y Blueprints
+├── database/schema.sql      # Estructura de la base de datos
+├── scripts/                 # Inicialización y primer administrador
+├── docs/                    # Análisis y documentación
+├── tests/                   # Pruebas del sistema
+├── instance/                # Base de datos local (se genera al iniciar)
+├── requirements.txt
+├── wsgi.py
+└── README.md
+```
+
+## Cómo se mantiene actualizado el stock
+
+Los movimientos tienen un tipo (**ENTRADA** o **SALIDA**) y una cantidad positiva. La vista `vw_inventario` calcula el stock de cada producto sumando las entradas y restando las salidas. Una restricción en la base de datos evita registrar salidas cuando las unidades disponibles son insuficientes.
+
+Las contraseñas se almacenan mediante un hash y las funciones administrativas verifican el rol del usuario. Los formularios incluyen un token para evitar envíos no autorizados desde otros sitios.
+
+## Pruebas
+
+Con el entorno virtual activo y las dependencias instaladas:
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+Las pruebas cubren reglas del stock, persistencia y recorridos principales de la aplicación. También se recomienda hacer una prueba manual de las pantallas con ambas clases de usuario.
+
+## Documentación y metodología
+
+- [Análisis y alcance](docs/ANALISIS_DEL_SISTEMA.md)
+- [Manual de usuario](docs/MANUAL_DE_USUARIO.md)
+- [Guía del código](docs/GUIA_DE_CODIGO.md)
+- [Rutas y plantillas](docs/RUTAS_Y_VISTAS.md)
+- [Tablero Trello](https://trello.com/b/D6cUCTrH/team-rcp-gestor-de-inventario-tp-integrador)
+
+El tablero está organizado en **Product Backlog, Sprint Backlog (To Do), In Progress, Code Review / Testing y Done**. Cada historia tiene criterios de aceptación y se considera terminada después de su implementación y revisión.
 
 ## Equipo
-
-### Integrantes
 
 - Lara Belgorodsky
 - Franco Mato
 - Romina Solis
 
-## Docente
+**Docente:** Florencio Elías Contrera.
 
-**Florencio Elías Contrera**
+Este proyecto se realizó con fines académicos como parte del Trabajo Práctico Integrador de la materia.

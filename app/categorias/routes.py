@@ -28,6 +28,7 @@ def nuevo():
         db.session.commit()
         flash("Categoría agregada", "ok")
     except ValueError as exc:
+        db.session.rollback()
         flash(str(exc), "error")
     except IntegrityError:
         db.session.rollback()

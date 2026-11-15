@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Confirmar baja{% endblock %}
+{% block contenido %}
+<section class="form-page">
+  <div class="page-heading">
+    <div>
+      <p class="eyebrow">Catálogo</p>
+      <h1>Confirmar baja de producto</h1>
+    </div>
+  </div>
+  <div class="panel form-panel">
+    <p>¿Querés dar de baja el producto <strong>{{ producto.nombre }}</strong> ({{ producto.codigo }})?</p>
+    <p class="helper-text">El producto dejará de aparecer en el inventario, pero se conservarán sus movimientos anteriores.</p>
+    <form method="post" action="{{ url_for('productos.desactivar', producto_id=producto.id) }}" class="form-actions">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <a class="button button--quiet-dark" href="{{ url_for('productos.listar') }}">Cancelar</a>
+      <button type="submit" class="button button--danger">Confirmar baja</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

@@ -12,7 +12,8 @@
   <div class="panel form-panel">
     {% if not categorias %}
     <div class="empty-state">
-      <p>Primero necesitás crear una <a class="text-link" href="{{ url_for('categorias.listar') }}">categoría activa</a>.</p>
+      <p>Primero necesitás crear una <a class="text-link" href="{{ url_for('categorias.listar') }}">categoría
+          activa</a>.</p>
     </div>
     {% else %}
     <form method="post" class="form-grid">
@@ -29,16 +30,19 @@
       <label>Categoría
         <select name="categoria_id" required>
           {% for c in categorias %}
-          <option value="{{ c.id }}" {% if producto and producto.categoria_id == c.id %}selected{% endif %}>{{ c.nombre }}</option>
+          <option value="{{ c.id }}" {% if producto and producto.categoria_id==c.id %}selected{% endif %}>{{ c.nombre }}
+          </option>
           {% endfor %}
         </select>
       </label>
       <label>Precio (ARS)
         <span class="field-hint">Hasta 2 decimales</span>
-        <input name="precio" inputmode="decimal" value="{{ '%0.2f'|format(producto.precio_centavos / 100) if producto else '0.00' }}" required>
+        <input name="precio" inputmode="decimal"
+          value="{{ '%0.2f'|format(producto.precio_centavos / 100) if producto else '0.00' }}" required>
       </label>
       <label>Stock mínimo
-        <input type="number" name="stock_minimo" min="0" value="{{ producto.stock_minimo if producto else 0 }}" required>
+        <input type="number" name="stock_minimo" min="0" value="{{ producto.stock_minimo if producto else 0 }}"
+          required>
       </label>
       {% if not producto %}
       <label>Stock inicial

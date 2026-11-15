@@ -8,7 +8,7 @@ USUARIO = re.compile(r"[A-Za-z][A-Za-z0-9_.-]{2,31}\Z")
 
 def entero(valor: str | None, nombre: str, minimo: int = 0, maximo: int = 1_000_000_000) -> int:
     texto = (valor or "").strip()
-    if not texto.isdecimal():
+    if not texto.isascii() or not texto.isdecimal() or len(texto) > 12:
         raise ValueError(f"{nombre}: ingresá un número entero válido")
     numero = int(texto)
     if not minimo <= numero <= maximo:

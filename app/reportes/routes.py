@@ -27,7 +27,7 @@ CONSULTAS = {
 def _celda_csv(valor):
     texto = "" if valor is None else str(valor)
     # Evita que una planilla ejecute el dato como una fórmula.
-    if texto.startswith(("=", "+", "-", "@", "\t", "\r", "\n")):
+    if texto.lstrip().startswith(("=", "+", "-", "@", "\t", "\r", "\n")):
         return "'" + texto
     return texto
 

@@ -48,7 +48,13 @@
   <div class="table-wrap">
     <table>
       <thead>
-        <tr><th>Código</th><th>Producto</th><th>Disponible</th><th>Mínimo</th><th>Estado</th></tr>
+        <tr>
+          <th>Código</th>
+          <th>Producto</th>
+          <th>Disponible</th>
+          <th>Mínimo</th>
+          <th>Estado</th>
+        </tr>
       </thead>
       <tbody>
         {% for p in bajo_stock %}
@@ -57,7 +63,8 @@
           <td class="cell-primary">{{ p.nombre }}</td>
           <td>{{ p.stock_actual }}</td>
           <td>{{ p.stock_minimo }}</td>
-          <td><span class="stock-badge stock-badge--{{ p.estado_stock|lower|replace('_', '-') }}">{{ p.estado_stock|replace('_', ' ')|title }}</span></td>
+          <td><span class="stock-badge stock-badge--{{ p.estado_stock|lower|replace('_', '-') }}">{{
+              p.estado_stock|replace('_', ' ')|title }}</span></td>
         </tr>
         {% endfor %}
       </tbody>

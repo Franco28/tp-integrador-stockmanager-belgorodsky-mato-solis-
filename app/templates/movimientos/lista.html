@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}Movimientos{% endblock %}
+{% block contenido %}
+<section class="page-heading">
+  <div>
+    <p class="eyebrow">Inventario</p>
+    <h1>Historial de movimientos</h1>
+    <p class="page-lead">Consultá las entradas y salidas de productos registradas en el sistema.</p>
+  </div>
+  {% if g.usuario.rol.nombre == 'administrador' %}
+  <a class="button button--primary" href="{{ url_for('movimientos.nuevo') }}">Registrar movimiento</a>
+  {% endif %}
+</section>
+<section class="panel table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Fecha (UTC)</th>
+        <th>Código</th>
+        <th>Producto</th>
+        <th>Tipo</th>
+        <th>Cantidad</th>
+        <th>Registrado por</th>
+        <th>Observación</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for movimiento in movimientos %}
+      <tr>
+        <td class="cell-code">{{ movimiento.fecha[:19]|replace('T', ' ') }}</td>
+        <td class="cell-code">{{ movimiento.codigo_producto }}</td>
+        <td class="cell-primary">{{ movimiento.producto }}</td>
+        <td>
+          <span class="status-badge {{ 'status-badge--active' if movimiento.tipo == 'ENTRADA' else 'status-badge--inactive' }}">
+            {{ 'Entrada' if movimiento.tipo == 'ENTRADA' else 'Salida' }}
+          </span>
+        </td>
+        <td>{{ movimiento.cantidad }}</td>
+        <td>{{ movimiento.registrado_por }}</td>
+        <td>{{ movimiento.observacion or '—' }}</td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="7"><div class="empty-state"><p>Todavía no se registraron movimientos de stock.</p></div></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+<p class="helper-text">Se muestran los últimos 500 movimientos.</p>
+{% endblock %}

@@ -8,8 +8,10 @@
     <p class="page-lead">Consultá el estado actual o descargá los datos en formato CSV.</p>
   </div>
   <div class="heading-actions">
-    <a class="button button--secondary" href="{{ url_for('reportes.exportar', tipo='inventario') }}">Descargar inventario</a>
-    <a class="button button--primary" href="{{ url_for('reportes.exportar', tipo='movimientos') }}">Descargar movimientos</a>
+    <a class="button button--secondary" href="{{ url_for('reportes.exportar', tipo='inventario') }}">Descargar
+      inventario</a>
+    <a class="button button--primary" href="{{ url_for('reportes.exportar', tipo='movimientos') }}">Descargar
+      movimientos</a>
   </div>
 </section>
 <div class="stats-grid stats-grid--reports">
@@ -33,20 +35,37 @@
 </div>
 <section class="panel table-wrap">
   <div class="section-heading">
-    <div><p class="eyebrow">Vista previa</p><h2>Inventario actual</h2></div>
+    <div>
+      <p class="eyebrow">Vista previa</p>
+      <h2>Inventario actual</h2>
+    </div>
   </div>
   <table>
-    <thead><tr><th>Código</th><th>Producto</th><th>Stock</th><th>Estado</th></tr></thead>
+    <thead>
+      <tr>
+        <th>Código</th>
+        <th>Producto</th>
+        <th>Stock</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
     <tbody>
       {% for p in inventario %}
       <tr>
         <td class="cell-code">{{ p.codigo }}</td>
         <td class="cell-primary">{{ p.nombre }}</td>
         <td>{{ p.stock_actual }}</td>
-        <td><span class="stock-badge stock-badge--{{ p.estado_stock|lower|replace('_', '-') }}">{{ p.estado_stock|replace('_', ' ')|title }}</span></td>
+        <td><span class="stock-badge stock-badge--{{ p.estado_stock|lower|replace('_', '-') }}">{{
+            p.estado_stock|replace('_', ' ')|title }}</span></td>
       </tr>
       {% else %}
-      <tr><td colspan="4"><div class="empty-state"><p>No hay datos para mostrar.</p></div></td></tr>
+      <tr>
+        <td colspan="4">
+          <div class="empty-state">
+            <p>No hay datos para mostrar.</p>
+          </div>
+        </td>
+      </tr>
       {% endfor %}
     </tbody>
   </table>
