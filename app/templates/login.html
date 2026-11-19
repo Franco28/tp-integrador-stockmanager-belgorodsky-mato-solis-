@@ -16,6 +16,12 @@
       </label>
       <button class="button button--primary button--wide" type="submit">Iniciar sesión</button>
     </form>
+    {% if google_habilitado %}
+    <p class="login-alternative">O también podés ingresar con Google:</p>
+    <a class="button button--secondary button--wide" href="{{ url_for('auth.login_google') }}">Ingresar con Google</a>
+    {% else %}
+    <p class="helper-text">El acceso con Google estará disponible cuando se configure.</p>
+    {% endif %}
   </section>
   <aside class="login-aside">
     <span class="login-aside-mark" aria-hidden="true">S</span>

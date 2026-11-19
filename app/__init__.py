@@ -60,6 +60,8 @@ def create_app():
         MAX_CONTENT_LENGTH=64 * 1024,
     )
     db.init_app(app)
+    from .oauth_client import configurar_google
+    configurar_google(app)
 
     @app.before_request
     def cargar_usuario():

@@ -600,3 +600,17 @@ textarea {
     display: none;
   }
 }
+
+.login-alternative {
+  margin: 1rem 0 0.6rem;
+  text-align: center;
+}
+.google-link-form {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+}
+.google-link-form input {
+  min-width: 12rem;
+  max-width: 16rem;
+}
