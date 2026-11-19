@@ -7,7 +7,7 @@
     <h1>Historial de movimientos</h1>
     <p class="page-lead">Consultá las entradas y salidas de productos registradas en el sistema.</p>
   </div>
-  {% if g.usuario.rol.nombre == 'administrador' %}
+  {% if g.usuario.rol.nombre in ['administrador', 'encargado'] %}
   <a class="button button--primary" href="{{ url_for('movimientos.nuevo') }}">Registrar movimiento</a>
   {% endif %}
 </section>

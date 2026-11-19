@@ -71,8 +71,9 @@ CREATE INDEX IF NOT EXISTS idx_movimientos_producto_fecha
 CREATE INDEX IF NOT EXISTS idx_movimientos_usuario ON movimientos_stock(usuario_id);
 CREATE INDEX IF NOT EXISTS idx_movimientos_fecha ON movimientos_stock(creado_en DESC);
 
--- Solo el administrador puede guardar movimientos.
-CREATE TRIGGER IF NOT EXISTS validar_nuevo_movimiento
+-- Administradores y encargados pueden guardar movimientos de stock.
+DROP TRIGGER IF EXISTS validar_nuevo_movimiento;
+CREATE TRIGGER validar_nuevo_movimiento
 BEFORE INSERT ON movimientos_stock
 BEGIN
     SELECT CASE
@@ -86,8 +87,8 @@ BEGIN
         WHEN NOT EXISTS (
             SELECT 1 FROM usuarios u JOIN roles r ON r.id = u.rol_id
             WHERE u.id = NEW.usuario_id AND u.activo = 1
-              AND r.nombre = 'administrador'
-        ) THEN RAISE(ABORT, 'Solo un administrador puede registrar movimientos')
+              AND r.nombre IN ('administrador', 'encargado')
+        ) THEN RAISE(ABORT, 'El usuario no tiene permiso para registrar movimientos')
     END;
 
     SELECT CASE
@@ -180,5 +181,9 @@ JOIN usuarios u ON u.id = m.usuario_id;
 
 INSERT INTO roles(nombre, descripcion)
 VALUES ('administrador', 'Gestion integral de productos, categorias, movimientos y usuarios'),
-       ('encargado', 'Solo consultas y reportes')
+       ('encargado', 'Consulta el inventario y registra entradas y salidas de stock')
 ON CONFLICT(nombre) DO NOTHING;
+
+UPDATE roles
+SET descripcion = 'Consulta el inventario y registra entradas y salidas de stock'
+WHERE nombre = 'encargado';

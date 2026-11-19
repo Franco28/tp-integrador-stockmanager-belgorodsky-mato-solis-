@@ -19,7 +19,7 @@ Si se rechaza el ingreso, verificá tus datos y consultá al administrador. El s
 
 **Administrador:** administra productos, categorías y usuarios; registra movimientos; consulta y exporta reportes; consulta la cotización externa.
 
-**Encargado:** consulta productos, categorías, movimientos, alertas y reportes. No puede modificar productos ni registrar movimientos.
+**Encargado:** consulta productos, categorías, movimientos, alertas y reportes; también puede registrar entradas y salidas de stock. No puede crear ni modificar productos, categorías o usuarios.
 
 ## 4. Consultar productos
 
@@ -43,7 +43,7 @@ El sistema informa si hay datos incorrectos o si el código ya se encuentra regi
 
 En el listado de **Productos**, elegí **Editar**, modificá los datos y guardá los cambios. Para retirar un producto del inventario, seleccioná **Dar de baja** y confirmá la operación. La baja conserva los movimientos históricos.
 
-## 7. Registrar movimientos (administrador)
+## 7. Registrar movimientos (administrador y encargado)
 
 1. Entrá a **Movimientos** y seleccioná **Registrar movimiento**.
 2. Elegí el producto y el tipo de operación: **Entrada** o **Salida**.
@@ -73,7 +73,7 @@ Presioná **Salir** en el encabezado al terminar.
 | Situación | Qué revisar |
 |---|---|
 | No puedo iniciar sesión | Revisá credenciales; si usás Google, confirmá que tu correo esté habilitado por el administrador. |
-| No tengo permiso para modificar | El rol encargado tiene acceso de consulta. |
+| No tengo permiso para modificar productos o categorías | Esas tareas corresponden al administrador. El encargado puede registrar movimientos de stock. |
 | No puedo registrar una salida | Verificá que haya stock suficiente. |
 | No se crea un producto | Revisá campos obligatorios, código único y categoría activa. |
 | La cotización no aparece | Puede haber un problema temporal con el servicio externo; intentá nuevamente. |

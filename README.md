@@ -11,7 +11,7 @@ StockManager es una aplicación de control de inventario hecha en Python y Flask
 - Productos: alta, consulta, búsqueda, modificación, baja lógica y categorías.
 - Movimientos: entradas, salidas y bloqueo cuando el stock no alcanza.
 - Reportes: resumen, alertas y exportación de inventario y movimientos a CSV.
-- Usuarios: administrador (gestión) y encargado (consultas).
+- Usuarios: administrador (gestión completa) y encargado (consulta y registro de movimientos de stock).
 - Autenticación local y acceso con Google para cuentas previamente autorizadas.
 - Consulta de cotización desde una API pública, independiente del stock.
 

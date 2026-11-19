@@ -19,7 +19,7 @@ Todas las rutas requieren inicio de sesión, excepto `/login`, las rutas de Goog
 | `/categorias/nuevo` | POST | Agregar categoría | Administrador |
 | `/categorias/<id>/desactivar` | POST | Desactivar categoría | Administrador |
 | `/movimientos/` | GET | Historial de movimientos | Administrador / encargado |
-| `/movimientos/nuevo` | GET, POST | Registrar entrada o salida | Administrador |
+| `/movimientos/nuevo` | GET, POST | Registrar entrada o salida | Administrador / encargado |
 | `/reportes/` | GET | Resumen y listado de inventario | Administrador / encargado |
 | `/reportes/exportar?tipo=inventario` | GET | Descargar inventario CSV | Administrador / encargado |
 | `/reportes/exportar?tipo=movimientos` | GET | Descargar movimientos CSV | Administrador / encargado |

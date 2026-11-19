@@ -28,7 +28,7 @@ El stock se calcula con las vistas definidas en `database/schema.sql`, a partir 
 
 ## Sesiones y permisos
 
-`app/passwords.py` crea y comprueba hashes de contraseñas. `app/security.py` valida la sesión, el token de los formularios y los permisos según el rol. El administrador puede realizar modificaciones y el encargado solamente consultas.
+`app/passwords.py` crea y comprueba hashes de contraseñas. `app/security.py` valida la sesión, el token de los formularios y los permisos según el rol. El administrador gestiona el catálogo y las cuentas; administrador y encargado pueden registrar movimientos de stock.
 
 ## Pruebas
 

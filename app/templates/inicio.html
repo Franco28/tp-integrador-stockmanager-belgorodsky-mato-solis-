@@ -7,12 +7,12 @@
     <h1>Resumen del inventario</h1>
     <p class="page-lead">Consultá existencias y detectá qué productos necesitan atención.</p>
   </div>
-  {% if g.usuario.rol.nombre == 'administrador' %}
   <div class="heading-actions">
+    {% if g.usuario.rol.nombre == 'administrador' %}
     <a class="button button--secondary" href="{{ url_for('productos.nuevo') }}"><i class="fa-solid fa-plus" aria-hidden="true"></i> Nuevo producto</a>
+    {% endif %}
     <a class="button button--primary" href="{{ url_for('movimientos.nuevo') }}"><i class="fa-solid fa-arrow-right-arrow-left" aria-hidden="true"></i> Registrar movimiento</a>
   </div>
-  {% endif %}
 </section>
 <div class="stats-grid">
   <article class="stat-card">

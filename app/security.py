@@ -39,3 +39,14 @@ def administrador_requerido(func):
             abort(403)
         return func(*args, **kwargs)
     return wrapper
+
+
+def administrador_o_encargado_requerido(func):
+    """Permite operaciones de inventario a los dos roles del sistema."""
+    @wraps(func)
+    @login_requerido
+    def wrapper(*args, **kwargs):
+        if g.usuario.rol.nombre not in {"administrador", "encargado"}:
+            abort(403)
+        return func(*args, **kwargs)
+    return wrapper

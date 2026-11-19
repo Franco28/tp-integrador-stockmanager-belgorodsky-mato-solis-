@@ -39,8 +39,8 @@ flowchart LR
 |---|---|---|
 | El administrador registra un producto | Externo (flujo) | Valida y guarda la información |
 | El administrador modifica o desactiva un producto | Externo (flujo) | Actualiza su información o estado |
-| El administrador registra una entrada de unidades | Externo (flujo) | Guarda el movimiento y actualiza el stock calculado |
-| El administrador intenta retirar unidades | Externo (control) | Verifica que el stock alcance antes de guardar la salida |
+| El administrador o encargado registra una entrada de unidades | Externo (flujo) | Guarda el movimiento y actualiza el stock calculado |
+| El administrador o encargado intenta retirar unidades | Externo (control) | Verifica que el stock alcance antes de guardar la salida |
 | El encargado consulta el inventario | Externo (flujo) | Muestra los productos y sus existencias |
 | Un usuario solicita el resumen del inventario | Externo (flujo) | Calcula el resumen y muestra las alertas de stock |
 | Un usuario inicia sesión | Externo (flujo) | Valida las credenciales y habilita las funciones del rol |

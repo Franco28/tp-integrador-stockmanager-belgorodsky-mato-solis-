@@ -5,7 +5,7 @@ from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 from ..extensions import db
 from ..models import MovimientoStock, Producto
-from ..security import administrador_requerido, login_requerido
+from ..security import administrador_o_encargado_requerido, login_requerido
 from ..validaciones import entero, opcional
 
 bp = Blueprint("movimientos", __name__)
@@ -21,7 +21,7 @@ def listar():
 
 
 @bp.route("/nuevo", methods=["GET", "POST"])
-@administrador_requerido
+@administrador_o_encargado_requerido
 def nuevo():
     productos = db.session.scalars(select(Producto).where(Producto.activo == 1).order_by(Producto.nombre)).all()
     if request.method == "POST":
