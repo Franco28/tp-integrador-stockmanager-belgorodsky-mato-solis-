@@ -11,6 +11,8 @@
       <p>No tenés permiso para acceder a esta función.</p>
     {% elif error.code == 413 %}
       <p>El archivo es demasiado grande. Las imágenes de producto pueden pesar hasta 5 MB.</p>
+    {% elif error.code == 500 %}
+      <p>Ocurrió un error inesperado. El problema quedó registrado; intentá nuevamente más tarde.</p>
     {% else %}
       <p>No encontramos la página o el registro que estás buscando.</p>
     {% endif %}

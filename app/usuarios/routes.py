@@ -1,8 +1,8 @@
 """Alta, consulta y baja de cuentas, además de la vinculación con Google."""
-from flask import Blueprint, abort, flash, g, redirect, render_template, request, url_for
+from flask import Blueprint, abort, current_app, flash, g, redirect, render_template, request, url_for
 import re
 from sqlalchemy import func, select
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 from ..extensions import db
 from ..models import Rol, Usuario
@@ -62,6 +62,10 @@ def nuevo():
     except IntegrityError:
         db.session.rollback()
         flash("Ya existe un usuario con ese nombre de acceso", "error")
+    except SQLAlchemyError:
+        db.session.rollback()
+        current_app.logger.exception("No se pudo crear el usuario")
+        flash("No se pudo crear el usuario. Intentá nuevamente.", "error")
     return redirect(url_for("usuarios.listar"))
 
 
@@ -113,6 +117,10 @@ def editar(usuario_id):
         except IntegrityError:
             db.session.rollback()
             flash("No se pudo guardar: ese nombre de usuario ya existe", "error")
+        except SQLAlchemyError:
+            db.session.rollback()
+            current_app.logger.exception("No se pudo actualizar el usuario %s", usuario_id)
+            flash("No se pudo actualizar el usuario. Intentá nuevamente.", "error")
 
     return render_template("usuarios/editar.html", usuario=usuario, roles=roles)
 
@@ -129,8 +137,14 @@ def desactivar(usuario_id):
     if usuario.rol.nombre == "administrador" and _administradores_activos() <= 1:
         flash("No se puede desactivar el último administrador activo", "error")
         return redirect(url_for("usuarios.listar"))
-    usuario.activo = 0
-    db.session.commit()
+    try:
+        usuario.activo = 0
+        db.session.commit()
+    except SQLAlchemyError:
+        db.session.rollback()
+        current_app.logger.exception("No se pudo desactivar el usuario %s", usuario_id)
+        flash("No se pudo desactivar el usuario. Intentá nuevamente.", "error")
+        return redirect(url_for("usuarios.listar"))
     flash("Cuenta desactivada (historial preservado)", "ok")
     return redirect(url_for("usuarios.listar"))
 
@@ -154,4 +168,8 @@ def vincular_google(usuario_id):
     except IntegrityError:
         db.session.rollback()
         flash("Ese correo ya está vinculado a otro usuario", "error")
+    except SQLAlchemyError:
+        db.session.rollback()
+        current_app.logger.exception("No se pudo vincular Google al usuario %s", usuario_id)
+        flash("No se pudo actualizar el vínculo con Google. Intentá nuevamente.", "error")
     return redirect(url_for("usuarios.listar"))

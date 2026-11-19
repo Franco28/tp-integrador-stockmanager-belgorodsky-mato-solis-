@@ -3,6 +3,7 @@ from flask import Blueprint, current_app, flash, g, redirect, render_template, r
 from authlib.integrations.base_client.errors import OAuthError
 from requests.exceptions import RequestException
 from sqlalchemy import select
+from sqlalchemy.exc import SQLAlchemyError
 
 from ..extensions import db
 from ..models import Usuario
@@ -94,4 +95,9 @@ def google_callback():
         db.session.rollback()
         current_app.logger.warning("No se completó el login con Google: %s", type(exc).__name__)
         flash("No se pudo iniciar sesión con Google. Intentá nuevamente.", "error")
+        return redirect(url_for("auth.login"))
+    except SQLAlchemyError:
+        db.session.rollback()
+        current_app.logger.exception("No se pudo vincular la cuenta en el inicio de sesión con Google")
+        flash("No se pudo completar el inicio de sesión con Google. Intentá nuevamente.", "error")
         return redirect(url_for("auth.login"))

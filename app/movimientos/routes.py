@@ -1,7 +1,7 @@
 """Registro y consulta de entradas y salidas."""
-from flask import Blueprint, abort, flash, g, redirect, render_template, request, url_for
+from flask import Blueprint, abort, current_app, flash, g, redirect, render_template, request, url_for
 from sqlalchemy import select, text
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 from ..extensions import db
 from ..models import MovimientoStock, Producto
@@ -35,6 +35,15 @@ def nuevo():
                 raise ValueError("Tipo de movimiento inválido")
             cantidad = entero(request.form.get("cantidad"), "Cantidad", 1)
             observacion = opcional(request.form.get("observacion"), "Observación")
+            if tipo == "SALIDA":
+                stock_actual = db.session.execute(
+                    text("SELECT stock_actual FROM vw_inventario WHERE producto_id = :producto_id"),
+                    {"producto_id": producto_id},
+                ).scalar_one_or_none()
+                if stock_actual is None:
+                    raise ValueError("Producto inexistente o inactivo")
+                if cantidad > stock_actual:
+                    raise ValueError("Stock insuficiente para esta salida")
             db.session.add(MovimientoStock(
                 producto_id=producto_id, usuario_id=g.usuario.id,
                 tipo=tipo, cantidad=cantidad, observacion=observacion,
@@ -45,11 +54,11 @@ def nuevo():
         except ValueError as exc:
             db.session.rollback()
             flash(str(exc), "error")
-        except IntegrityError as exc:
+        except IntegrityError:
             db.session.rollback()
-            texto = str(exc.orig)
-            if "Stock insuficiente" in texto:
-                flash("Stock insuficiente para esta salida", "error")
-            else:
-                flash("No se pudo registrar el movimiento", "error")
+            flash("No se pudo registrar el movimiento. Verificá el stock y el estado del producto.", "error")
+        except SQLAlchemyError:
+            db.session.rollback()
+            current_app.logger.exception("No se pudo registrar el movimiento de stock")
+            flash("No se pudo registrar el movimiento. Intentá nuevamente.", "error")
     return render_template("movimientos/formulario.html", productos=productos)

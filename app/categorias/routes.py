@@ -1,7 +1,7 @@
 """Alta, consulta y baja de categorías."""
-from flask import Blueprint, abort, flash, redirect, render_template, request, url_for
+from flask import Blueprint, abort, current_app, flash, redirect, render_template, request, url_for
 from sqlalchemy import func, or_, select
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 from ..extensions import db
 from ..models import Categoria, Producto
@@ -70,6 +70,10 @@ def nuevo():
     except IntegrityError:
         db.session.rollback()
         flash("La categoría ya existe", "error")
+    except SQLAlchemyError:
+        db.session.rollback()
+        current_app.logger.exception("No se pudo guardar la categoría")
+        flash("No se pudo guardar la categoría. Intentá nuevamente.", "error")
     return redirect(url_for("categorias.listar"))
 
 
@@ -79,7 +83,13 @@ def desactivar(categoria_id):
     categoria = db.session.get(Categoria, categoria_id)
     if categoria is None:
         abort(404)
-    categoria.activa = 0
-    db.session.commit()
+    try:
+        categoria.activa = 0
+        db.session.commit()
+    except SQLAlchemyError:
+        db.session.rollback()
+        current_app.logger.exception("No se pudo desactivar la categoría %s", categoria_id)
+        flash("No se pudo desactivar la categoría. Intentá nuevamente.", "error")
+        return redirect(url_for("categorias.listar"))
     flash("Categoría desactivada; los productos existentes conservan su clasificación", "ok")
     return redirect(url_for("categorias.listar"))

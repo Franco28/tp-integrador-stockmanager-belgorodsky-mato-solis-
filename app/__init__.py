@@ -103,6 +103,7 @@ def create_app():
     @app.errorhandler(403)
     @app.errorhandler(404)
     @app.errorhandler(413)
+    @app.errorhandler(500)
     def mostrar_error(error):
         return render_template("error.html", error=error), error.code
 

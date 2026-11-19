@@ -44,7 +44,8 @@ def _guardar_imagen(archivo):
     try:
         archivo.save(destino)
     except OSError as exc:
-        destino.unlink(missing_ok=True)
+        _eliminar_imagen_segura(f"uploads/productos/{nombre}")
+        current_app.logger.exception("No se pudo guardar el archivo de imagen")
         raise ValueError("No se pudo guardar la imagen") from exc
     return f"uploads/productos/{nombre}"
 
@@ -73,6 +74,14 @@ def _eliminar_imagen(ruta):
     if len(partes) != 3 or partes[:2] != ("uploads", "productos"):
         return
     (Path(current_app.static_folder) / "uploads" / "productos" / partes[2]).unlink(missing_ok=True)
+
+
+def _eliminar_imagen_segura(ruta):
+    """Limpia un archivo sin convertir un fallo de limpieza en un fallo de la operación."""
+    try:
+        _eliminar_imagen(ruta)
+    except OSError:
+        current_app.logger.warning("No se pudo eliminar un archivo de imagen", exc_info=True)
 
 
 def _categorias():
@@ -142,20 +151,22 @@ def nuevo():
             return redirect(url_for("productos.listar"))
         except ValueError as exc:
             db.session.rollback()
-            _eliminar_imagen(imagen_guardada)
+            _eliminar_imagen_segura(imagen_guardada)
             flash(str(exc), "error")
         except IntegrityError:
             db.session.rollback()
-            _eliminar_imagen(imagen_guardada)
+            _eliminar_imagen_segura(imagen_guardada)
             current_app.logger.info("Alta rechazada por una restricción SQL")
             flash("No se pudo crear: código duplicado o datos inválidos", "error")
         except OSError:
             db.session.rollback()
-            _eliminar_imagen(imagen_guardada)
+            _eliminar_imagen_segura(imagen_guardada)
+            current_app.logger.exception("No se pudo guardar la imagen del producto")
             flash("No se pudo guardar la imagen", "error")
         except SQLAlchemyError:
             db.session.rollback()
-            _eliminar_imagen(imagen_guardada)
+            _eliminar_imagen_segura(imagen_guardada)
+            current_app.logger.exception("No se pudo guardar el producto en la base de datos")
             flash("No se pudo guardar el producto", "error")
     return render_template("productos/formulario.html", producto=None, categorias=_categorias())
 
@@ -184,24 +195,28 @@ def editar(producto_id):
             producto.actualizado_en = datetime.now(timezone.utc).isoformat(timespec="milliseconds").replace("+00:00", "Z")
             db.session.commit()
             if imagen_anterior and imagen_anterior != producto.imagen:
-                _eliminar_imagen(imagen_anterior)
+                # La operación ya se confirmó en la base: un fallo al borrar el
+                # archivo viejo se registra, pero no debe borrar la imagen nueva.
+                _eliminar_imagen_segura(imagen_anterior)
             flash("Producto actualizado", "ok")
             return redirect(url_for("productos.listar"))
         except ValueError as exc:
             db.session.rollback()
-            _eliminar_imagen(imagen_guardada)
+            _eliminar_imagen_segura(imagen_guardada)
             flash(str(exc), "error")
         except IntegrityError:
             db.session.rollback()
-            _eliminar_imagen(imagen_guardada)
+            _eliminar_imagen_segura(imagen_guardada)
             flash("No se pudo modificar: código duplicado o datos inválidos", "error")
         except OSError:
             db.session.rollback()
-            _eliminar_imagen(imagen_guardada)
+            _eliminar_imagen_segura(imagen_guardada)
+            current_app.logger.exception("No se pudo guardar la imagen del producto")
             flash("No se pudo guardar la imagen", "error")
         except SQLAlchemyError:
             db.session.rollback()
-            _eliminar_imagen(imagen_guardada)
+            _eliminar_imagen_segura(imagen_guardada)
+            current_app.logger.exception("No se pudo actualizar el producto en la base de datos")
             flash("No se pudo actualizar el producto", "error")
     return render_template("productos/formulario.html", producto=producto, categorias=_categorias())
 
@@ -221,7 +236,13 @@ def desactivar(producto_id):
     producto = db.session.get(Producto, producto_id)
     if producto is None or producto.activo != 1:
         abort(404)
-    producto.activo = 0
-    db.session.commit()
+    try:
+        producto.activo = 0
+        db.session.commit()
+    except SQLAlchemyError:
+        db.session.rollback()
+        current_app.logger.exception("No se pudo dar de baja el producto %s", producto_id)
+        flash("No se pudo dar de baja el producto. Intentá nuevamente.", "error")
+        return redirect(url_for("productos.listar"))
     flash("Producto dado de baja (se conservó su historial)", "ok")
     return redirect(url_for("productos.listar"))
