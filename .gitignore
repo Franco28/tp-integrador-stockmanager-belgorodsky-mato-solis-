@@ -9,6 +9,8 @@ __pycache__/
 instance/*.db
 instance/*.db-*
 instance/.secret_key
+instance/*
+instance
 *.log
 .DS_Store
 __MACOSX/
