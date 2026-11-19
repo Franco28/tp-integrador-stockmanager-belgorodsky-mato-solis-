@@ -1,5 +1,6 @@
-"""Alta, consulta y baja de cuentas."""
+"""Alta, consulta y baja de cuentas, además de la vinculación con Google."""
 from flask import Blueprint, abort, flash, g, redirect, render_template, request, url_for
+import re
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 
@@ -10,6 +11,14 @@ from ..security import administrador_requerido
 from ..validaciones import USUARIO, entero, requerido
 
 bp = Blueprint("usuarios", __name__)
+
+
+def _correo_google(valor):
+    correo = (valor or "").strip().lower()
+    if correo and (len(correo) > 254 or not re.fullmatch(r"[^\s@]+@[^\s@]+\.[^\s@]+", correo)):
+        raise ValueError("Ingresá un correo de Google válido")
+    return correo or None
+
 
 
 @bp.get("/")
@@ -60,4 +69,26 @@ def desactivar(usuario_id):
     usuario.activo = 0
     db.session.commit()
     flash("Cuenta desactivada (historial preservado)", "ok")
+    return redirect(url_for("usuarios.listar"))
+
+
+@bp.post("/<int:usuario_id>/google")
+@administrador_requerido
+def vincular_google(usuario_id):
+    usuario = db.session.get(Usuario, usuario_id)
+    if usuario is None:
+        abort(404)
+    try:
+        correo = _correo_google(request.form.get("correo_google"))
+        if correo != usuario.correo_google:
+            usuario.correo_google = correo
+            usuario.google_sub = None
+        db.session.commit()
+        flash("Cuenta de Google actualizada", "ok")
+    except ValueError as exc:
+        db.session.rollback()
+        flash(str(exc), "error")
+    except IntegrityError:
+        db.session.rollback()
+        flash("Ese correo ya está vinculado a otro usuario", "error")
     return redirect(url_for("usuarios.listar"))

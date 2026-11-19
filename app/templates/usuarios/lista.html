@@ -43,6 +43,7 @@
         <th>Usuario</th>
         <th>Nombre</th>
         <th>Rol</th>
+        <th>Google</th>
         <th>Estado</th>
         <th>Acción</th>
       </tr>
@@ -53,6 +54,14 @@
         <td class="cell-code">{{ u.usuario }}</td>
         <td class="cell-primary">{{ u.nombre }}</td>
         <td>{{ u.rol.nombre|capitalize }}</td>
+        <td>
+          <form method="post" action="{{ url_for('usuarios.vincular_google', usuario_id=u.id) }}" class="google-link-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="email" name="correo_google" value="{{ u.correo_google or '' }}"
+                   placeholder="correo@gmail.com" maxlength="254" aria-label="Correo Google de {{ u.usuario }}">
+            <button class="button button--secondary button--small" type="submit">Guardar</button>
+          </form>
+        </td>
         <td><span class="status-badge {{ 'status-badge--active' if u.activo else 'status-badge--inactive' }}">{{
             'Activo' if u.activo else 'Inactivo' }}</span></td>
         <td>
@@ -66,7 +75,7 @@
       </tr>
       {% else %}
       <tr>
-        <td colspan="5">
+        <td colspan="6">
           <div class="empty-state">
             <p>No hay cuentas para mostrar.</p>
           </div>

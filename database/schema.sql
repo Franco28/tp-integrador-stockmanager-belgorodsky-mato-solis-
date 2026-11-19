@@ -16,12 +16,18 @@ CREATE TABLE IF NOT EXISTS usuarios (
     usuario TEXT NOT NULL COLLATE NOCASE UNIQUE
         CHECK (length(trim(usuario)) BETWEEN 3 AND 32),
     password_hash TEXT NOT NULL CHECK (length(password_hash) >= 40),
+    correo_google TEXT COLLATE NOCASE,
+    google_sub TEXT,
     rol_id INTEGER NOT NULL REFERENCES roles(id) ON DELETE RESTRICT,
     activo INTEGER NOT NULL DEFAULT 1 CHECK (activo IN (0, 1)),
     creado_en TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
 ) STRICT;
 
 CREATE INDEX IF NOT EXISTS idx_usuarios_rol ON usuarios(rol_id);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_usuarios_correo_google
+    ON usuarios(correo_google) WHERE correo_google IS NOT NULL;
+CREATE UNIQUE INDEX IF NOT EXISTS idx_usuarios_google_sub
+    ON usuarios(google_sub) WHERE google_sub IS NOT NULL;
 
 CREATE TABLE IF NOT EXISTS categorias (
     id INTEGER PRIMARY KEY,
