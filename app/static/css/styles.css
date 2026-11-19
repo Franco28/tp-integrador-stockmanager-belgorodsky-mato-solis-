@@ -800,6 +800,15 @@ textarea {
 .filter-panel .button {
   min-height: 43px;
 }
+.category-filter-panel {
+  grid-template-columns: minmax(220px, 1fr) minmax(145px, 190px) minmax(190px, 250px) auto;
+}
+.category-filter-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
 .empty-state--card {
   padding: 52px 20px;
 }
@@ -979,6 +988,13 @@ tr:hover td {
   }
   .filter-panel .button {
     width: 100%;
+  }
+  .category-filter-actions {
+    grid-column: 1 / -1;
+    flex-wrap: wrap;
+  }
+  .category-filter-actions .button {
+    width: auto;
   }
   .image-upload-layout {
     grid-template-columns: 150px minmax(0, 1fr);
