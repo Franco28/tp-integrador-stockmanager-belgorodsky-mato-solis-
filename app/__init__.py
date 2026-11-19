@@ -108,6 +108,7 @@ def create_app():
     from .movimientos.routes import bp as movimientos_bp
     from .reportes.routes import bp as reportes_bp
     from .usuarios.routes import bp as usuarios_bp
+    from .cotizaciones.routes import bp as cotizaciones_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(main_bp)
@@ -116,4 +117,5 @@ def create_app():
     app.register_blueprint(movimientos_bp, url_prefix="/movimientos")
     app.register_blueprint(reportes_bp, url_prefix="/reportes")
     app.register_blueprint(usuarios_bp, url_prefix="/usuarios")
+    app.register_blueprint(cotizaciones_bp, url_prefix="/cotizaciones")
     return app

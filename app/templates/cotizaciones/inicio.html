@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Cotización de referencia{% endblock %}
+{% block contenido %}
+<section class="page-heading">
+  <div>
+    <p class="eyebrow">Consulta externa</p>
+    <h1>Cotización de referencia</h1>
+    <p class="page-lead">Información obtenida desde una API pública. No modifica los precios de los productos.</p>
+  </div>
+</section>
+<section class="panel">
+{% if error %}
+  <p role="alert">{{ error }}</p>
+{% elif cotizacion %}
+  <h2>{{ cotizacion.fuente }}</h2>
+  <p>Moneda: <strong>{{ cotizacion.moneda }}</strong></p>
+  <p>Compra: <strong>$ {{ cotizacion.compra }}</strong></p>
+  <p>Venta: <strong>$ {{ cotizacion.venta }}</strong></p>
+  <p>Última actualización informada: {{ cotizacion.fecha }}</p>
+{% endif %}
+  <a href="{{ url_for('cotizaciones.inicio') }}" class="button button--secondary">Actualizar cotización</a>
+</section>
+{% endblock %}

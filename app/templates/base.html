@@ -32,6 +32,7 @@
         <a href="{{ url_for('reportes.inicio') }}" {% if request.endpoint and request.endpoint.startswith('reportes.')
           %}aria-current="page" {% endif %}>Reportes</a>
         {% if g.usuario.rol.nombre == 'administrador' %}
+        <a href="{{ url_for('cotizaciones.inicio') }}">Cotización</a>
         <a href="{{ url_for('usuarios.listar') }}" {% if request.endpoint and request.endpoint.startswith('usuarios.')
           %}aria-current="page" {% endif %}>Usuarios</a>
         {% endif %}
