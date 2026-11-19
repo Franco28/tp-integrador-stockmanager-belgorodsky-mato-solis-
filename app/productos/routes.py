@@ -1,6 +1,7 @@
 """Alta, consulta, edición y baja de productos."""
 from datetime import datetime, timezone
 from pathlib import Path
+from urllib.parse import urlsplit
 from uuid import uuid4
 
 from flask import Blueprint, abort, current_app, flash, g, redirect, render_template, request, url_for
@@ -46,6 +47,23 @@ def _guardar_imagen(archivo):
         destino.unlink(missing_ok=True)
         raise ValueError("No se pudo guardar la imagen") from exc
     return f"uploads/productos/{nombre}"
+
+
+def _validar_url_imagen(valor):
+    url = (valor or "").strip()
+    if not url:
+        return None
+    if len(url) > 2048:
+        raise ValueError("La URL de la imagen no puede superar los 2048 caracteres")
+    try:
+        partes = urlsplit(url)
+        if partes.port is not None and not 1 <= partes.port <= 65535:
+            raise ValueError
+    except ValueError as exc:
+        raise ValueError("Ingresá una URL de imagen válida con HTTPS") from exc
+    if partes.scheme.lower() != "https" or not partes.hostname or partes.username or partes.password:
+        raise ValueError("La URL de la imagen debe comenzar con https://")
+    return url
 
 
 def _eliminar_imagen(ruta):
@@ -107,6 +125,10 @@ def nuevo():
             imagen_guardada = _guardar_imagen(request.files.get("imagen"))
             if imagen_guardada:
                 datos["imagen"] = imagen_guardada
+            else:
+                imagen_url = _validar_url_imagen(request.form.get("imagen_url"))
+                if imagen_url:
+                    datos["imagen"] = imagen_url
             producto = Producto(**datos)
             db.session.add(producto)
             db.session.flush()
@@ -155,6 +177,8 @@ def editar(producto_id):
                 datos["imagen"] = imagen_guardada
             elif request.form.get("quitar_imagen") == "1":
                 datos["imagen"] = None
+            elif (imagen_url := _validar_url_imagen(request.form.get("imagen_url"))):
+                datos["imagen"] = imagen_url
             for campo, valor in datos.items():
                 setattr(producto, campo, valor)
             producto.actualizado_en = datetime.now(timezone.utc).isoformat(timespec="milliseconds").replace("+00:00", "Z")

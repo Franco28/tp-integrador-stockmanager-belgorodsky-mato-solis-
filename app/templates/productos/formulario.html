@@ -30,12 +30,12 @@
       <div class="field-span image-upload-field">
         <div>
           <h2 class="form-section-title"><i class="fa-solid fa-image" aria-hidden="true"></i> Imagen del producto</h2>
-          <p class="field-hint">JPG, PNG o WebP. Tamaño máximo: 5 MB.</p>
+          <p class="field-hint">Subí un archivo JPG, PNG o WebP de hasta 5 MB, o pegá una URL HTTPS.</p>
         </div>
         <div class="image-upload-layout">
           <div class="image-preview" id="image-preview">
             {% if producto and producto.imagen %}
-            <img src="{{ url_for('static', filename=producto.imagen) }}" alt="Imagen actual de {{ producto.nombre }}">
+            <img src="{{ producto.imagen if producto.imagen.startswith('https://') else url_for('static', filename=producto.imagen) }}" alt="Imagen actual de {{ producto.nombre }}">
             {% else %}
             <span class="image-preview-placeholder"><i class="fa-solid fa-box-open" aria-hidden="true"></i><span>Sin imagen</span></span>
             {% endif %}
@@ -43,7 +43,11 @@
           <div class="image-upload-controls">
             <label for="product-image">Seleccioná una foto</label>
             <input id="product-image" type="file" name="imagen" accept="image/jpeg,image/png,image/webp">
-            <span class="field-hint">La imagen se guarda en el servidor local de la aplicación.</span>
+            <label for="product-image-url">O pegá la URL de la imagen</label>
+            <input id="product-image-url" type="url" name="imagen_url" maxlength="2048"
+                   placeholder="https://sitio.com/imagen.jpg"
+                   value="{{ producto.imagen if producto and producto.imagen and producto.imagen.startswith('https://') else '' }}">
+            <span class="field-hint">Las imágenes remotas se cargan directamente desde el sitio de origen.</span>
             {% if producto and producto.imagen %}
             <label class="checkbox-label">
               <input type="checkbox" name="quitar_imagen" value="1">

@@ -93,7 +93,8 @@ def create_app():
         response.headers["X-Frame-Options"] = "DENY"
         response.headers["Referrer-Policy"] = "same-origin"
         response.headers["Content-Security-Policy"] = (
-            "default-src 'self'; style-src 'self'; form-action 'self'; frame-ancestors 'none'"
+            "default-src 'self'; img-src 'self' https:; style-src 'self'; "
+            "form-action 'self'; frame-ancestors 'none'"
         )
         response.headers["Cache-Control"] = "no-store"
         return response

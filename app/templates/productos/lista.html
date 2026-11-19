@@ -35,7 +35,8 @@
   <article class="product-card">
     <div class="product-card__image">
       {% if p.imagen %}
-      <img src="{{ url_for('static', filename=p.imagen) }}" alt="Foto de {{ p.nombre }}" loading="lazy">
+      <img src="{{ p.imagen if p.imagen.startswith('https://') else url_for('static', filename=p.imagen) }}"
+           alt="Foto de {{ p.nombre }}" loading="lazy" referrerpolicy="no-referrer">
       {% else %}
       <div class="product-image-placeholder" aria-label="Producto sin imagen">
         <i class="fa-solid {{ 'fa-mobile-screen-button' if 'iphone' in p.categoria|lower else 'fa-laptop' }}" aria-hidden="true"></i>
