@@ -11,9 +11,19 @@
       <label>Usuario
         <input name="usuario" autocomplete="username" maxlength="32" placeholder="Tu nombre de usuario" required>
       </label>
-      <label>Contraseña
-        <input type="password" name="password" autocomplete="current-password" placeholder="Tu contraseña" required>
-      </label>
+      <label for="login-password">Contraseña</label>
+      <div class="password-field">
+        <input id="login-password" type="password" name="password" autocomplete="current-password"
+               placeholder="Tu contraseña" required>
+        <button class="password-toggle" type="button" aria-label="Mostrar contraseña"
+                aria-controls="login-password" aria-pressed="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+            <path class="password-toggle-slash" d="M3 3l18 18"></path>
+          </svg>
+        </button>
+      </div>
       <button class="button button--primary button--wide" type="submit">Iniciar sesión</button>
     </form>
     {% if google_habilitado %}
@@ -29,4 +39,5 @@
     <p>Consultá productos, registrá movimientos y revisá el stock desde un solo lugar.</p>
   </aside>
 </div>
+<script src="{{ url_for('static', filename='js/password-toggle.js') }}" defer></script>
 {% endblock %}

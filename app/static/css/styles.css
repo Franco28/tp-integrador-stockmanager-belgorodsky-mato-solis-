@@ -449,6 +449,46 @@ textarea {
   border-radius: 7px;
   font-weight: 400;
 }
+.password-field {
+  position: relative;
+}
+.password-field input {
+  padding-right: 48px;
+}
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 5px;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 7px;
+  color: #536e77;
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  transform: translateY(-50%);
+}
+.password-toggle:hover {
+  color: #0a6579;
+  background: #eef5f6;
+}
+.password-toggle svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+.password-toggle-slash {
+  display: block;
+}
+.password-toggle.is-visible .password-toggle-slash {
+  display: none;
+}
 textarea {
   min-height: 100px;
   resize: vertical;
