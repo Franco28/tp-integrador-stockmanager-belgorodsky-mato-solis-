@@ -54,6 +54,8 @@ python scripts/seed_demo.py
 
 El seed se puede ejecutar más de una vez: agrega los productos que falten y registra las entradas iniciales con un administrador activo. Los precios son valores de muestra. No lo ejecutes en producción.
 
+Desde **Productos**, un administrador puede cargar una imagen JPEG, PNG o WebP de hasta 5 MB. El formulario muestra una vista previa y el catálogo presenta las imágenes en tarjetas adaptables. En desarrollo se guardan en `app/static/uploads/productos`; Render gratuito utiliza almacenamiento efímero, por lo que esas imágenes no están respaldadas entre despliegues.
+
 Ejecutá:
 
 ```bash

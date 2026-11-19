@@ -60,7 +60,7 @@ def create_app():
         GOOGLE_CLIENT_SECRET=os.environ.get("GOOGLE_CLIENT_SECRET", ""),
         COTIZACION_API_URL=os.environ.get("COTIZACION_API_URL") or "https://dolarapi.com/v1/dolares/oficial",
         PERMANENT_SESSION_LIFETIME=timedelta(hours=6),
-        MAX_CONTENT_LENGTH=64 * 1024,
+        MAX_CONTENT_LENGTH=6 * 1024 * 1024,
     )
     db.init_app(app)
     from .oauth_client import configurar_google
@@ -101,6 +101,7 @@ def create_app():
     @app.errorhandler(400)
     @app.errorhandler(403)
     @app.errorhandler(404)
+    @app.errorhandler(413)
     def mostrar_error(error):
         return render_template("error.html", error=error), error.code
 

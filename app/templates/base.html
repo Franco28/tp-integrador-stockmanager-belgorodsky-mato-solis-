@@ -7,6 +7,7 @@
   <meta name="theme-color" content="#12313b">
   <title>{% block title %}StockManager{% endblock %} | Team RCP</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendor/fontawesome/css/solid.min.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='vendor/sweetalert2/sweetalert2.min.css') }}">
 </head>
 
@@ -23,19 +24,19 @@
       {% if g.usuario %}
       <nav class="main-nav" aria-label="Menú principal">
         <a href="{{ url_for('main.inicio') }}" {% if request.endpoint=='main.inicio' %}aria-current="page" {% endif
-          %}>Inicio</a>
+          %}><i class="fa-solid fa-house" aria-hidden="true"></i><span>Inicio</span></a>
         <a href="{{ url_for('productos.listar') }}" {% if request.endpoint and request.endpoint.startswith('productos.')
-          %}aria-current="page" {% endif %}>Productos</a>
+          %}aria-current="page" {% endif %}><i class="fa-solid fa-boxes-stacked" aria-hidden="true"></i><span>Productos</span></a>
         <a href="{{ url_for('categorias.listar') }}" {% if request.endpoint and
-          request.endpoint.startswith('categorias.') %}aria-current="page" {% endif %}>Categorías</a>
+          request.endpoint.startswith('categorias.') %}aria-current="page" {% endif %}><i class="fa-solid fa-tags" aria-hidden="true"></i><span>Categorías</span></a>
         <a href="{{ url_for('movimientos.listar') }}" {% if request.endpoint and
-          request.endpoint.startswith('movimientos.') %}aria-current="page" {% endif %}>Movimientos</a>
+          request.endpoint.startswith('movimientos.') %}aria-current="page" {% endif %}><i class="fa-solid fa-arrow-right-arrow-left" aria-hidden="true"></i><span>Movimientos</span></a>
         <a href="{{ url_for('reportes.inicio') }}" {% if request.endpoint and request.endpoint.startswith('reportes.')
-          %}aria-current="page" {% endif %}>Reportes</a>
+          %}aria-current="page" {% endif %}><i class="fa-solid fa-chart-column" aria-hidden="true"></i><span>Reportes</span></a>
         {% if g.usuario.rol.nombre == 'administrador' %}
-        <a href="{{ url_for('cotizaciones.inicio') }}">Cotización</a>
+        <a href="{{ url_for('cotizaciones.inicio') }}"><i class="fa-solid fa-coins" aria-hidden="true"></i><span>Cotización</span></a>
         <a href="{{ url_for('usuarios.listar') }}" {% if request.endpoint and request.endpoint.startswith('usuarios.')
-          %}aria-current="page" {% endif %}>Usuarios</a>
+          %}aria-current="page" {% endif %}><i class="fa-solid fa-users" aria-hidden="true"></i><span>Usuarios</span></a>
         {% endif %}
       </nav>
       <div class="user-menu">
@@ -46,7 +47,7 @@
         </span>
         <form method="post" action="{{ url_for('auth.logout') }}">
           <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-          <button class="button button--quiet" type="submit">Salir</button>
+          <button class="button button--quiet" type="submit"><i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i><span>Salir</span></button>
         </form>
       </div>
       {% endif %}

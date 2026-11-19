@@ -26,6 +26,13 @@ def inicializar(db_path: Path = DB_PATH) -> None:
                 conexion.execute("ALTER TABLE usuarios ADD COLUMN correo_google TEXT COLLATE NOCASE")
             if "google_sub" not in columnas:
                 conexion.execute("ALTER TABLE usuarios ADD COLUMN google_sub TEXT")
+        existe_productos = conexion.execute(
+            "SELECT 1 FROM sqlite_master WHERE type='table' AND name='productos'"
+        ).fetchone()
+        if existe_productos:
+            columnas_productos = {fila[1] for fila in conexion.execute("PRAGMA table_info(productos)")}
+            if "imagen" not in columnas_productos:
+                conexion.execute("ALTER TABLE productos ADD COLUMN imagen TEXT")
         conexion.executescript(esquema)
         resultado = conexion.execute("PRAGMA integrity_check").fetchone()[0]
         if resultado != "ok":

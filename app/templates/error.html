@@ -9,6 +9,8 @@
       <p>Los datos de la solicitud no son válidos. Volvé a cargar la página e intentá de nuevo.</p>
     {% elif error.code == 403 %}
       <p>No tenés permiso para acceder a esta función.</p>
+    {% elif error.code == 413 %}
+      <p>El archivo es demasiado grande. Las imágenes de producto pueden pesar hasta 5 MB.</p>
     {% else %}
       <p>No encontramos la página o el registro que estás buscando.</p>
     {% endif %}

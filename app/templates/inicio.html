@@ -9,29 +9,29 @@
   </div>
   {% if g.usuario.rol.nombre == 'administrador' %}
   <div class="heading-actions">
-    <a class="button button--secondary" href="{{ url_for('productos.nuevo') }}">Nuevo producto</a>
-    <a class="button button--primary" href="{{ url_for('movimientos.nuevo') }}">Registrar movimiento</a>
+    <a class="button button--secondary" href="{{ url_for('productos.nuevo') }}"><i class="fa-solid fa-plus" aria-hidden="true"></i> Nuevo producto</a>
+    <a class="button button--primary" href="{{ url_for('movimientos.nuevo') }}"><i class="fa-solid fa-arrow-right-arrow-left" aria-hidden="true"></i> Registrar movimiento</a>
   </div>
   {% endif %}
 </section>
 <div class="stats-grid">
   <article class="stat-card">
-    <span class="stat-label">Productos activos</span>
+    <span class="stat-label"><i class="fa-solid fa-boxes-stacked" aria-hidden="true"></i> Productos activos</span>
     <strong>{{ resumen.total_productos }}</strong>
     <span class="stat-foot">Artículos en el catálogo</span>
   </article>
   <article class="stat-card stat-card--blue">
-    <span class="stat-label">Unidades disponibles</span>
+    <span class="stat-label"><i class="fa-solid fa-cubes-stacked" aria-hidden="true"></i> Unidades disponibles</span>
     <strong>{{ resumen.total_unidades }}</strong>
     <span class="stat-foot">Total en inventario</span>
   </article>
   <article class="stat-card stat-card--amber">
-    <span class="stat-label">Stock bajo</span>
+    <span class="stat-label"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> Stock bajo</span>
     <strong>{{ resumen.productos_stock_bajo }}</strong>
     <span class="stat-foot">Revisar reposición</span>
   </article>
   <article class="stat-card stat-card--red">
-    <span class="stat-label">Sin stock</span>
+    <span class="stat-label"><i class="fa-solid fa-circle-xmark" aria-hidden="true"></i> Sin stock</span>
     <strong>{{ resumen.productos_sin_stock }}</strong>
     <span class="stat-foot">Productos agotados</span>
   </article>
@@ -42,7 +42,7 @@
       <p class="eyebrow">Seguimiento</p>
       <h2>Productos que necesitan atención</h2>
     </div>
-    <a class="text-link" href="{{ url_for('productos.listar') }}">Ver productos <span aria-hidden="true">→</span></a>
+    <a class="text-link" href="{{ url_for('productos.listar') }}">Ver productos <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
   </div>
   {% if bajo_stock %}
   <div class="table-wrap">

@@ -16,7 +16,7 @@
           activa</a>.</p>
     </div>
     {% else %}
-    <form method="post" class="form-grid">
+    <form method="post" class="form-grid" enctype="multipart/form-data">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <label>Código
         <input name="codigo" maxlength="40" value="{{ producto.codigo if producto else '' }}" required>
@@ -27,6 +27,32 @@
       <label class="field-span">Descripción
         <textarea name="descripcion" maxlength="500">{{ producto.descripcion or '' if producto else '' }}</textarea>
       </label>
+      <div class="field-span image-upload-field">
+        <div>
+          <h2 class="form-section-title"><i class="fa-solid fa-image" aria-hidden="true"></i> Imagen del producto</h2>
+          <p class="field-hint">JPG, PNG o WebP. Tamaño máximo: 5 MB.</p>
+        </div>
+        <div class="image-upload-layout">
+          <div class="image-preview" id="image-preview">
+            {% if producto and producto.imagen %}
+            <img src="{{ url_for('static', filename=producto.imagen) }}" alt="Imagen actual de {{ producto.nombre }}">
+            {% else %}
+            <span class="image-preview-placeholder"><i class="fa-solid fa-box-open" aria-hidden="true"></i><span>Sin imagen</span></span>
+            {% endif %}
+          </div>
+          <div class="image-upload-controls">
+            <label for="product-image">Seleccioná una foto</label>
+            <input id="product-image" type="file" name="imagen" accept="image/jpeg,image/png,image/webp">
+            <span class="field-hint">La imagen se guarda en el servidor local de la aplicación.</span>
+            {% if producto and producto.imagen %}
+            <label class="checkbox-label">
+              <input type="checkbox" name="quitar_imagen" value="1">
+              Quitar imagen actual
+            </label>
+            {% endif %}
+          </div>
+        </div>
+      </div>
       <label>Categoría
         <select name="categoria_id" required>
           {% for c in categorias %}
@@ -51,10 +77,11 @@
       {% endif %}
       <div class="form-actions field-span">
         <a class="button button--quiet-dark" href="{{ url_for('productos.listar') }}">Cancelar</a>
-        <button class="button button--primary" type="submit">Guardar producto</button>
+        <button class="button button--primary" type="submit"><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i> Guardar producto</button>
       </div>
     </form>
     {% endif %}
   </div>
 </section>
+<script src="{{ url_for('static', filename='js/image-preview.js') }}" defer></script>
 {% endblock %}

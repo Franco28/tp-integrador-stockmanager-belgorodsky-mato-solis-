@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS productos (
         CHECK (length(trim(codigo)) BETWEEN 1 AND 40),
     nombre TEXT NOT NULL CHECK (length(trim(nombre)) BETWEEN 1 AND 120),
     descripcion TEXT,
+    imagen TEXT,
     categoria_id INTEGER NOT NULL REFERENCES categorias(id) ON DELETE RESTRICT,
     precio_centavos INTEGER NOT NULL CHECK (precio_centavos >= 0),
     stock_minimo INTEGER NOT NULL DEFAULT 0 CHECK (stock_minimo >= 0),

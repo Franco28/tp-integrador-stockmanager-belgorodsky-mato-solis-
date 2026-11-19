@@ -56,6 +56,7 @@ class Producto(db.Model):
     codigo = db.Column(db.Text, nullable=False, unique=True)
     nombre = db.Column(db.Text, nullable=False)
     descripcion = db.Column(db.Text)
+    imagen = db.Column(db.Text)
     categoria_id = db.Column(db.Integer, db.ForeignKey("categorias.id", ondelete="RESTRICT"), nullable=False)
     precio_centavos = db.Column(db.Integer, nullable=False)
     stock_minimo = db.Column(db.Integer, nullable=False, default=0)

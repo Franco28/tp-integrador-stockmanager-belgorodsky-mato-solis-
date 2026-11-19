@@ -9,6 +9,8 @@ __pycache__/
 instance/*.db
 instance/*.db-*
 instance/.secret_key
+app/static/uploads/productos/*
+!app/static/uploads/productos/.gitkeep
 instance/*
 instance
 *.log

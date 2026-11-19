@@ -1,9 +1,11 @@
 """Alta, consulta, edición y baja de productos."""
 from datetime import datetime, timezone
+from pathlib import Path
+from uuid import uuid4
 
 from flask import Blueprint, abort, current_app, flash, g, redirect, render_template, request, url_for
 from sqlalchemy import select, text
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 from ..extensions import db
 from ..models import Categoria, MovimientoStock, Producto
@@ -11,6 +13,48 @@ from ..security import administrador_requerido, login_requerido
 from ..validaciones import datos_producto, entero
 
 bp = Blueprint("productos", __name__)
+
+FIRMAS_IMAGEN = {
+    ".jpg": lambda contenido: contenido.startswith(b"\xff\xd8\xff"),
+    ".jpeg": lambda contenido: contenido.startswith(b"\xff\xd8\xff"),
+    ".png": lambda contenido: contenido.startswith(b"\x89PNG\r\n\x1a\n"),
+    ".webp": lambda contenido: contenido.startswith(b"RIFF") and contenido[8:12] == b"WEBP",
+}
+MAX_IMAGEN_BYTES = 5 * 1024 * 1024
+
+
+def _guardar_imagen(archivo):
+    if archivo is None or not archivo.filename:
+        return None
+
+    extension = Path(archivo.filename).suffix.lower()
+    verificar = FIRMAS_IMAGEN.get(extension)
+    contenido = archivo.stream.read(MAX_IMAGEN_BYTES + 1)
+    archivo.stream.seek(0)
+    if len(contenido) > MAX_IMAGEN_BYTES:
+        raise ValueError("La imagen no puede superar los 5 MB")
+    if verificar is None or not verificar(contenido[:12]):
+        raise ValueError("La imagen debe ser JPEG, PNG o WebP válida")
+
+    nombre = f"{uuid4().hex}{extension}"
+    carpeta = Path(current_app.static_folder) / "uploads" / "productos"
+    destino = carpeta / nombre
+    carpeta.mkdir(parents=True, exist_ok=True)
+    try:
+        archivo.save(destino)
+    except OSError as exc:
+        destino.unlink(missing_ok=True)
+        raise ValueError("No se pudo guardar la imagen") from exc
+    return f"uploads/productos/{nombre}"
+
+
+def _eliminar_imagen(ruta):
+    if not ruta:
+        return
+    partes = Path(ruta).parts
+    if len(partes) != 3 or partes[:2] != ("uploads", "productos"):
+        return
+    (Path(current_app.static_folder) / "uploads" / "productos" / partes[2]).unlink(missing_ok=True)
 
 
 def _categorias():
@@ -38,10 +82,13 @@ def listar():
     except ValueError:
         abort(400, description="Filtro de categoría inválido")
     datos = db.session.execute(text("""
-        SELECT * FROM vw_inventario
-        WHERE (:q = '' OR codigo LIKE :busqueda ESCAPE '\\' OR nombre LIKE :busqueda ESCAPE '\\')
-          AND (:categoria_id = 0 OR categoria_id = :categoria_id)
-        ORDER BY nombre LIMIT 500
+        SELECT inventario.*, productos.imagen
+        FROM vw_inventario AS inventario
+        JOIN productos ON productos.id = inventario.producto_id
+        WHERE (:q = '' OR inventario.codigo LIKE :busqueda ESCAPE '\\'
+                         OR inventario.nombre LIKE :busqueda ESCAPE '\\')
+          AND (:categoria_id = 0 OR inventario.categoria_id = :categoria_id)
+        ORDER BY inventario.nombre LIMIT 500
     """), {"q": q, "busqueda": f"%{_normalizar_busqueda(q)}%", "categoria_id": categoria_id}).mappings().all()
     categorias = db.session.scalars(select(Categoria).order_by(Categoria.nombre)).all()
     return render_template("productos/lista.html", productos=datos, q=q,
@@ -52,10 +99,14 @@ def listar():
 @administrador_requerido
 def nuevo():
     if request.method == "POST":
+        imagen_guardada = None
         try:
             datos = datos_producto(request.form)
             _validar_categoria(datos["categoria_id"])
             inicial = entero(request.form.get("stock_inicial", "0"), "Stock inicial")
+            imagen_guardada = _guardar_imagen(request.files.get("imagen"))
+            if imagen_guardada:
+                datos["imagen"] = imagen_guardada
             producto = Producto(**datos)
             db.session.add(producto)
             db.session.flush()
@@ -69,11 +120,21 @@ def nuevo():
             return redirect(url_for("productos.listar"))
         except ValueError as exc:
             db.session.rollback()
+            _eliminar_imagen(imagen_guardada)
             flash(str(exc), "error")
         except IntegrityError:
             db.session.rollback()
+            _eliminar_imagen(imagen_guardada)
             current_app.logger.info("Alta rechazada por una restricción SQL")
             flash("No se pudo crear: código duplicado o datos inválidos", "error")
+        except OSError:
+            db.session.rollback()
+            _eliminar_imagen(imagen_guardada)
+            flash("No se pudo guardar la imagen", "error")
+        except SQLAlchemyError:
+            db.session.rollback()
+            _eliminar_imagen(imagen_guardada)
+            flash("No se pudo guardar el producto", "error")
     return render_template("productos/formulario.html", producto=None, categorias=_categorias())
 
 
@@ -84,21 +145,40 @@ def editar(producto_id):
     if producto is None or producto.activo != 1:
         abort(404)
     if request.method == "POST":
+        imagen_guardada = None
+        imagen_anterior = producto.imagen
         try:
             datos = datos_producto(request.form)
             _validar_categoria(datos["categoria_id"])
+            imagen_guardada = _guardar_imagen(request.files.get("imagen"))
+            if imagen_guardada:
+                datos["imagen"] = imagen_guardada
+            elif request.form.get("quitar_imagen") == "1":
+                datos["imagen"] = None
             for campo, valor in datos.items():
                 setattr(producto, campo, valor)
             producto.actualizado_en = datetime.now(timezone.utc).isoformat(timespec="milliseconds").replace("+00:00", "Z")
             db.session.commit()
+            if imagen_anterior and imagen_anterior != producto.imagen:
+                _eliminar_imagen(imagen_anterior)
             flash("Producto actualizado", "ok")
             return redirect(url_for("productos.listar"))
         except ValueError as exc:
             db.session.rollback()
+            _eliminar_imagen(imagen_guardada)
             flash(str(exc), "error")
         except IntegrityError:
             db.session.rollback()
+            _eliminar_imagen(imagen_guardada)
             flash("No se pudo modificar: código duplicado o datos inválidos", "error")
+        except OSError:
+            db.session.rollback()
+            _eliminar_imagen(imagen_guardada)
+            flash("No se pudo guardar la imagen", "error")
+        except SQLAlchemyError:
+            db.session.rollback()
+            _eliminar_imagen(imagen_guardada)
+            flash("No se pudo actualizar el producto", "error")
     return render_template("productos/formulario.html", producto=producto, categorias=_categorias())
 
 
