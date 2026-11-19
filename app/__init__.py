@@ -5,6 +5,7 @@ from pathlib import Path
 import secrets
 
 from flask import Flask, g, render_template, session
+from dotenv import load_dotenv
 from sqlalchemy import event
 from sqlalchemy.engine import Engine
 
@@ -31,6 +32,7 @@ def obtener_clave(instance_path):
 
 
 def create_app():
+    load_dotenv(Path(__file__).resolve().parents[1] / ".env")
     app = Flask(__name__, instance_relative_config=True)
     instance_path = Path(app.instance_path)
     instance_path.mkdir(parents=True, exist_ok=True)
@@ -38,13 +40,22 @@ def create_app():
     db_path = Path(os.environ.get("STOCKMANAGER_DB_PATH", instance_path / "StockManager.db"))
     db_path = db_path.resolve()
 
+    entorno = os.environ.get("STOCKMANAGER_ENV", "development")
+    clave = os.environ.get("STOCKMANAGER_SECRET_KEY")
+    if entorno == "production" and not clave:
+        raise RuntimeError("Falta STOCKMANAGER_SECRET_KEY en producción")
+
     app.config.update(
-        SECRET_KEY=os.environ.get("STOCKMANAGER_SECRET_KEY") or obtener_clave(instance_path),
+        SECRET_KEY=clave or obtener_clave(instance_path),
         SQLALCHEMY_DATABASE_URI="sqlite:///" + db_path.as_posix(),
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
         SESSION_COOKIE_HTTPONLY=True,
         SESSION_COOKIE_SAMESITE="Lax",
-        SESSION_COOKIE_SECURE=os.environ.get("STOCKMANAGER_COOKIE_SECURE") == "1",
+        SESSION_COOKIE_SECURE=entorno == "production" or os.environ.get("STOCKMANAGER_COOKIE_SECURE") == "1",
+        PUBLIC_URL=os.environ.get("STOCKMANAGER_PUBLIC_URL", "").rstrip("/"),
+        GOOGLE_CLIENT_ID=os.environ.get("GOOGLE_CLIENT_ID", ""),
+        GOOGLE_CLIENT_SECRET=os.environ.get("GOOGLE_CLIENT_SECRET", ""),
+        COTIZACION_API_URL=os.environ.get("COTIZACION_API_URL", "https://dolarapi.com/v1/dolares/oficial"),
         PERMANENT_SESSION_LIFETIME=timedelta(hours=6),
         MAX_CONTENT_LENGTH=64 * 1024,
     )

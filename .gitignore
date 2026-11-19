@@ -1,3 +1,14 @@
+.env
+.env.*
+!.env.example
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+instance/*.db
+instance/*.db-*
 instance/.secret_key
-scripts/__pycache__/
-app/__pycache__/
+*.log
+.DS_Store
+__MACOSX/
