@@ -8,6 +8,13 @@ from ..security import login_requerido
 bp = Blueprint("main", __name__)
 
 
+@bp.get("/health")
+def health():
+    # Render comprueba esta ruta sin necesidad de iniciar sesión.
+    db.session.execute(text("SELECT 1")).scalar_one()
+    return {"estado": "ok"}
+
+
 @bp.get("/")
 @login_requerido
 def inicio():

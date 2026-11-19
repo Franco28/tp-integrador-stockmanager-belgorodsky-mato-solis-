@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: stockmanager-rcp
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python scripts/inicializar_db.py && python scripts/crear_admin_entorno.py && gunicorn wsgi:app
+    healthCheckPath: /health
+    envVars:
+      - key: STOCKMANAGER_ENV
+        value: production
+      - key: STOCKMANAGER_COOKIE_SECURE
+        value: "1"
+      - key: STOCKMANAGER_SECRET_KEY
+        generateValue: true
+      - key: STOCKMANAGER_PUBLIC_URL
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: STOCKMANAGER_ADMIN_NOMBRE
+        sync: false
+      - key: STOCKMANAGER_ADMIN_USUARIO
+        sync: false
+      - key: STOCKMANAGER_ADMIN_PASSWORD
+        sync: false

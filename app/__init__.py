@@ -42,6 +42,9 @@ def create_app():
 
     entorno = os.environ.get("STOCKMANAGER_ENV", "development")
     clave = os.environ.get("STOCKMANAGER_SECRET_KEY")
+    url_publica = os.environ.get("STOCKMANAGER_PUBLIC_URL", "").rstrip("/")
+    if entorno == "production" and not url_publica.startswith("https://"):
+        raise RuntimeError("Configurá STOCKMANAGER_PUBLIC_URL con HTTPS en Render")
     if entorno == "production" and not clave:
         raise RuntimeError("Falta STOCKMANAGER_SECRET_KEY en producción")
 
@@ -52,7 +55,7 @@ def create_app():
         SESSION_COOKIE_HTTPONLY=True,
         SESSION_COOKIE_SAMESITE="Lax",
         SESSION_COOKIE_SECURE=entorno == "production" or os.environ.get("STOCKMANAGER_COOKIE_SECURE") == "1",
-        PUBLIC_URL=os.environ.get("STOCKMANAGER_PUBLIC_URL", "").rstrip("/"),
+        PUBLIC_URL=url_publica,
         GOOGLE_CLIENT_ID=os.environ.get("GOOGLE_CLIENT_ID", ""),
         GOOGLE_CLIENT_SECRET=os.environ.get("GOOGLE_CLIENT_SECRET", ""),
         COTIZACION_API_URL=os.environ.get("COTIZACION_API_URL", "https://dolarapi.com/v1/dolares/oficial"),
