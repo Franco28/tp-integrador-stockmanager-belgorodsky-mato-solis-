@@ -46,6 +46,14 @@ python scripts/inicializar_db.py
 python scripts/crear_admin.py
 ```
 
+Para cargar un catálogo local de demostración con iPhone y MacBook:
+
+```bash
+python scripts/seed_demo.py
+```
+
+El seed se puede ejecutar más de una vez: agrega los productos que falten y registra las entradas iniciales con un administrador activo. Los precios son valores de muestra. No lo ejecutes en producción.
+
 Ejecutá:
 
 ```bash

@@ -7,6 +7,7 @@
   <meta name="theme-color" content="#12313b">
   <title>{% block title %}StockManager{% endblock %} | Team RCP</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendor/sweetalert2/sweetalert2.min.css') }}">
 </head>
 
 <body>
@@ -53,9 +54,13 @@
   </header>
   <main class="page-shell">
     {% with mensajes = get_flashed_messages(with_categories=true) %}
-    {% for tipo, mensaje in mensajes %}
-    <div role="status" class="notice notice--{{ tipo }}">{{ mensaje }}</div>
-    {% endfor %}
+    {% if mensajes %}
+    <div id="flash-messages" aria-live="polite">
+      {% for tipo, mensaje in mensajes %}
+      <div role="status" class="notice notice--{{ tipo }} flash-message" data-type="{{ tipo }}">{{ mensaje }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
     {% endwith %}
     {% block contenido %}{% endblock %}
   </main>
@@ -63,6 +68,8 @@
     <span>StockManager</span>
     <span>Trabajo Práctico Integrador · Team RCP</span>
   </footer>
+  <script src="{{ url_for('static', filename='vendor/sweetalert2/sweetalert2.all.min.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/flash-toasts.js') }}" defer></script>
 </body>
 
 </html>
