@@ -1,148 +1,110 @@
-# StockManager
+# StockManager - Trabajo Práctico Integrador
 
-**Trabajo Práctico Integrador — Análisis y Metodologías de Sistemas**  
-Carrera: Analista de Sistemas · Escuela Da Vinci
+**Materia:** Análisis y Metodologías de Sistemas | **Carrera:** Analista de Sistemas | **Escuela Da Vinci**
 
-StockManager es una aplicación web para registrar productos, controlar las existencias y consultar los movimientos del inventario. El objetivo es mantener la información centralizada y reducir los errores asociados a registros manuales.
+**Equipo RCP:** Lara Belgorodsky, Franco Mato y Romina Solis.
 
-El proyecto fue desarrollado en Python y se organiza mediante historias de usuario y Sprints, siguiendo los contenidos de la materia.
+StockManager es una aplicación de control de inventario hecha en Python y Flask. Permite dar de alta y modificar productos, registrar movimientos, calcular el stock disponible y consultar reportes.
 
 ## Funcionalidades
 
-- Inicio y cierre de sesión con dos roles: **administrador** y **encargado**.
-- Alta, consulta, búsqueda, modificación y baja lógica de productos.
-- Gestión de categorías y stock mínimo por producto.
-- Registro de entradas y salidas de unidades.
-- Validación para evitar salidas superiores al stock disponible.
-- Historial de movimientos, resumen de inventario y alertas de stock bajo.
-- Exportación de inventario y movimientos a CSV.
-- Persistencia de la información con SQLite.
-
-El **administrador** puede modificar productos, categorías, usuarios y movimientos. El **encargado** solo puede consultar productos, categorías, movimientos y reportes. Las operaciones de ventas, compras y facturación quedan fuera del alcance de este trabajo.
+- Productos: alta, consulta, búsqueda, modificación, baja lógica y categorías.
+- Movimientos: entradas, salidas y bloqueo cuando el stock no alcanza.
+- Reportes: resumen, alertas y exportación de inventario y movimientos a CSV.
+- Usuarios: administrador (gestión) y encargado (consultas).
+- Autenticación local y acceso con Google para cuentas previamente autorizadas.
+- Consulta de cotización desde una API pública, independiente del stock.
 
 ## Tecnologías
 
-- **Python 3.10 o superior** y **Flask** para la aplicación web.
-- **Flask-SQLAlchemy** y **SQLite 3.37 o superior** para persistencia.
-- **Jinja2, HTML y CSS** para las páginas del sistema.
-- **Trello** para organizar las historias de usuario.
+- Python 3.10+, Flask, Jinja2, HTML, CSS.
+- Flask-SQLAlchemy y SQLite (incluye vistas y restricciones SQL).
+- Authlib para Google (OAuth/OIDC), Requests para la API externa.
+- `unittest` para pruebas y Gunicorn para el despliegue.
+- Trello para las historias de usuario y la planificación de Sprints.
 
-No se utilizan servicios externos ni una arquitectura de microservicios: es una única aplicación organizada en módulos mediante Blueprints, como se trabajó en las clases.
+## Instalación local
 
-## Instalación y puesta en marcha
-
-Los comandos se ejecutan desde la carpeta raíz del proyecto.
-
-### 1. Crear el entorno virtual
+Desde la raíz del proyecto:
 
 ```bash
 python -m venv .venv
 ```
 
-Activación en Windows (PowerShell):
-
-```powershell
-.\.venv\Scripts\Activate.ps1
-```
-
-En Linux o macOS:
-
-```bash
-source .venv/bin/activate
-```
-
-### 2. Instalar dependencias
+Activá el entorno: en Windows PowerShell, `.\.venv\Scripts\Activate.ps1`; en Linux/macOS, `source .venv/bin/activate`.
 
 ```bash
 python -m pip install -r requirements.txt
 ```
 
-### 3. Inicializar la base de datos
+Copiá `.env.example` como `.env`. Para usar el login local no necesitás completar Google. Podés dejar `STOCKMANAGER_SECRET_KEY` vacío en desarrollo, pero debe configurarse en producción. **Nunca subas `.env` a GitHub.**
+
+Inicializá la base y creá el primer administrador:
 
 ```bash
 python scripts/inicializar_db.py
-```
-
-El script crea `instance/StockManager.db` con las tablas, restricciones, vistas y los roles. Se puede volver a ejecutar sin borrar los registros existentes.
-
-### 4. Crear la primera cuenta administradora
-
-```bash
 python scripts/crear_admin.py
 ```
 
-El programa solicita nombre, usuario y contraseña (mínimo 12 caracteres). **El proyecto no incluye usuarios ni contraseñas predeterminadas.**
-
-### 5. Ejecutar Flask
+Ejecutá:
 
 ```bash
 flask --app wsgi run --debug
 ```
 
-Abrir **http://127.0.0.1:5000** en el navegador e iniciar sesión con la cuenta creada. `--debug` se usa solo durante el desarrollo local.
+Abrí `http://127.0.0.1:5000`. `--debug` es solo para desarrollo local.
 
-## Uso básico
+## Ingreso con Google
 
-1. El administrador inicia sesión y crea al menos una **categoría**.
-2. Registra un **producto**, indicando código, nombre, categoría, precio, stock mínimo y, si corresponde, stock inicial.
-3. Desde **Movimientos** registra entradas y salidas. El stock se calcula automáticamente a partir de esos registros.
-4. Consulta el inventario desde **Productos** o **Inicio** y verifica las alertas de bajo stock.
-5. Desde **Reportes** puede consultar los datos y descargar archivos CSV.
-6. El administrador puede crear cuentas de tipo encargado, para permitir consultas sin autorización para modificar datos.
+La aplicación permite iniciar sesión usando Google, pero no crea usuarios por sí sola: primero un administrador debe registrar el correo autorizado desde **Usuarios**. De ese modo se respetan los roles existentes.
 
-El producto se da de baja en lugar de borrarse físicamente para conservar sus movimientos anteriores. Antes de la baja se muestra una página de confirmación.
+1. Creá las credenciales de OAuth en Google Cloud.
+2. Configurá `GOOGLE_CLIENT_ID` y `GOOGLE_CLIENT_SECRET` en `.env` o Render.
+3. En la configuración de Google autorizá el callback local `http://127.0.0.1:5000/login/google/callback` (y la URL HTTPS real cuando se publique).
+4. Probá el acceso con un usuario que tenga su correo Google vinculado.
 
-Para una explicación paso a paso, consultar [Manual de usuario](docs/MANUAL_DE_USUARIO.md).
+El login tradicional se mantiene y no depende de Google.
+
+## Consumo de API
+
+Desde **Cotización**, el administrador consulta datos de referencia usando `COTIZACION_API_URL` (por defecto `https://dolarapi.com/v1/dolares/oficial`). La aplicación controla errores y establece un tiempo límite de espera. Esta consulta **no modifica** precios, productos ni stock.
+
+## Despliegue en Render
+
+Incluimos `render.yaml` y [una guía](docs/DESPLIEGUE_RENDER.md). Para publicar hay que configurar la URL pública, credenciales Google y datos de la cuenta administradora inicial en las variables privadas del servicio. El servicio arranca con Gunicorn y sin modo debug.
+
+**Limitación de SQLite en Render gratuito:** el archivo de base de datos se puede perder al reiniciar o redesplegar si el almacenamiento es efímero. Esta versión permite una demostración del sistema, pero la persistencia duradera requiere almacenamiento apropiado. Ver [explicación y comprobaciones](docs/PERSISTENCIA_RENDER.md). No declaramos probada la publicación hasta obtener una URL real y ejecutar las pruebas correspondientes.
 
 ## Estructura principal
 
 ```text
-StockManager/
-├── app/
-│   ├── auth/                 # Inicio y cierre de sesión
-│   ├── categorias/           # Gestión de categorías
-│   ├── main/                 # Resumen del inventario
-│   ├── movimientos/          # Entradas, salidas e historial
-│   ├── productos/            # Gestión de productos
-│   ├── reportes/             # Consultas y CSV
-│   ├── usuarios/             # Administración de cuentas
-│   ├── static/css/           # Estilos
-│   ├── templates/            # Páginas HTML con Jinja2
-│   ├── models.py             # Tablas representadas como clases
-│   ├── security.py           # Sesiones, permisos y formularios
-│   ├── validaciones.py       # Validación de datos
-│   └── __init__.py           # Configuración y Blueprints
-├── database/schema.sql      # Estructura de la base de datos
-├── scripts/                 # Inicialización y primer administrador
-├── docs/                    # Análisis y documentación
-├── instance/                # Base de datos local (se genera al iniciar)
-├── requirements.txt
-├── wsgi.py
-└── README.md
+app/                 # Rutas, modelos, seguridad y plantillas
+  auth/              # Login local y Google
+  usuarios/          # Cuentas, permisos y vinculación Google
+  productos/         # Gestión de productos
+  movimientos/       # Entradas y salidas
+  categorias/        # Categorías
+  reportes/          # Consultas y CSV
+  cotizaciones/      # Consulta API externa
+database/schema.sql  # Tablas, vistas, restricciones y roles
+scripts/             # Inicialización y creación de administrador
+instance/            # Datos locales generados, no distribuir
+docs/                # Manual, análisis y despliegue
+tests/               # Pruebas unittest
+requirements.txt
+render.yaml
+.env.example
+wsgi.py
 ```
 
-## Cómo se mantiene actualizado el stock
+## Documentación
 
-Los movimientos tienen un tipo (**ENTRADA** o **SALIDA**) y una cantidad positiva. La vista `vw_inventario` calcula el stock de cada producto sumando las entradas y restando las salidas. Una restricción en la base de datos evita registrar salidas cuando las unidades disponibles son insuficientes.
+- [Manual](docs/MANUAL_DE_USUARIO.md).
+- [Análisis del sistema y contexto](docs/ANALISIS_DEL_SISTEMA.md).
+- [Despliegue en Render](docs/DESPLIEGUE_RENDER.md).
+- [Historias en Trello](https://trello.com/b/D6cUCTrH/team-rcp-gestor-de-inventario-tp-integrador).
+- [Repositorio de GitHub](https://github.com/Franco28/tp-integrador-stockmanager-belgorodsky-mato-solis-).
 
-Las contraseñas se almacenan mediante un hash y las funciones administrativas verifican el rol del usuario. Los formularios incluyen un token para evitar envíos no autorizados desde otros sitios.
+## Alcance y entrega
 
-## Documentación y metodología
-
-- [Análisis y alcance](docs/ANALISIS_DEL_SISTEMA.md)
-- [Manual de usuario](docs/MANUAL_DE_USUARIO.md)
-- [Guía del código](docs/GUIA_DE_CODIGO.md)
-- [Rutas y plantillas](docs/RUTAS_Y_VISTAS.md)
-- [Tablero Trello](https://trello.com/b/D6cUCTrH/team-rcp-gestor-de-inventario-tp-integrador)
-
-El tablero está organizado en **Product Backlog, Sprint Backlog (To Do), In Progress, Code Review / Testing y Done**. Cada historia tiene criterios de aceptación y se considera terminada después de su implementación y revisión.
-
-## Equipo
-
-- Lara Belgorodsky
-- Franco Mato
-- Romina Solis
-
-**Docente:** Florencio Elías Contrera.
-
-Este proyecto se realizó con fines académicos como parte del Trabajo Práctico Integrador de la materia.
+El proyecto no incluye facturación, ventas, gestión de proveedores ni un módulo contable. Está desarrollado como un TP incremental. **Antes del segundo parcial**.

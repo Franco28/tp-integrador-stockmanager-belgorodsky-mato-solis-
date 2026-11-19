@@ -37,10 +37,10 @@ def create_app():
     instance_path = Path(app.instance_path)
     instance_path.mkdir(parents=True, exist_ok=True)
 
-    db_path = Path(os.environ.get("STOCKMANAGER_DB_PATH", instance_path / "StockManager.db"))
+    db_path = Path(os.environ.get("STOCKMANAGER_DB_PATH") or instance_path / "StockManager.db")
     db_path = db_path.resolve()
 
-    entorno = os.environ.get("STOCKMANAGER_ENV", "development")
+    entorno = os.environ.get("STOCKMANAGER_ENV") or "development"
     clave = os.environ.get("STOCKMANAGER_SECRET_KEY")
     url_publica = os.environ.get("STOCKMANAGER_PUBLIC_URL", "").rstrip("/")
     if entorno == "production" and not url_publica.startswith("https://"):
@@ -58,7 +58,7 @@ def create_app():
         PUBLIC_URL=url_publica,
         GOOGLE_CLIENT_ID=os.environ.get("GOOGLE_CLIENT_ID", ""),
         GOOGLE_CLIENT_SECRET=os.environ.get("GOOGLE_CLIENT_SECRET", ""),
-        COTIZACION_API_URL=os.environ.get("COTIZACION_API_URL", "https://dolarapi.com/v1/dolares/oficial"),
+        COTIZACION_API_URL=os.environ.get("COTIZACION_API_URL") or "https://dolarapi.com/v1/dolares/oficial",
         PERMANENT_SESSION_LIFETIME=timedelta(hours=6),
         MAX_CONTENT_LENGTH=64 * 1024,
     )

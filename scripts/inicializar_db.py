@@ -7,7 +7,7 @@ import sqlite3
 ROOT = Path(__file__).resolve().parents[1]
 from dotenv import load_dotenv
 load_dotenv(ROOT / ".env")
-DB_PATH = Path(os.environ.get("STOCKMANAGER_DB_PATH", ROOT / "instance" / "StockManager.db")).resolve()
+DB_PATH = Path(os.environ.get("STOCKMANAGER_DB_PATH") or ROOT / "instance" / "StockManager.db").resolve()
 SQL_PATH = ROOT / "database" / "schema.sql"
 
 
