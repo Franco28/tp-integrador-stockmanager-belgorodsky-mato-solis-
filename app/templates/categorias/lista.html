@@ -19,7 +19,7 @@
   <form method="post" action="{{ url_for('categorias.nuevo') }}" class="inline-form">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <label>Nombre
-      <input name="nombre" maxlength="80" placeholder="Ej. Bebidas" required>
+      <input name="nombre" maxlength="80" placeholder="Ej. Accesorios" required>
     </label>
     <label>Descripción
       <input name="descripcion" maxlength="500" placeholder="Descripción opcional">
