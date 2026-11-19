@@ -66,11 +66,11 @@
         </select>
       </label>
       <label>Precio (ARS)
-        <span class="field-hint">Hasta 2 decimales</span>
         <input name="precio" inputmode="decimal"
           value="{{ '%0.2f'|format(producto.precio_centavos / 100) if producto else '0.00' }}" required>
+        <span class="field-hint">Hasta 2 decimales</span>
       </label>
-      <label>Stock mínimo
+      <label class="{{ 'field-span' if producto else '' }}">Stock mínimo
         <input type="number" name="stock_minimo" min="0" value="{{ producto.stock_minimo if producto else 0 }}"
           required>
       </label>
