@@ -12,11 +12,27 @@ class Rol(db.Model):
 
 class Usuario(db.Model):
     __tablename__ = "usuarios"
+    __table_args__ = (
+        db.Index(
+            "idx_usuarios_correo_google",
+            "correo_google",
+            unique=True,
+            sqlite_where=db.text("correo_google IS NOT NULL"),
+        ),
+        db.Index(
+            "idx_usuarios_google_sub",
+            "google_sub",
+            unique=True,
+            sqlite_where=db.text("google_sub IS NOT NULL"),
+        ),
+    )
 
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.Text, nullable=False)
     usuario = db.Column(db.Text, nullable=False, unique=True)
     password_hash = db.Column(db.Text, nullable=False)
+    correo_google = db.Column(db.Text(collation="NOCASE"))
+    google_sub = db.Column(db.Text)
     rol_id = db.Column(db.Integer, db.ForeignKey("roles.id", ondelete="RESTRICT"), nullable=False)
     activo = db.Column(db.Integer, nullable=False, default=1)
     creado_en = db.Column(db.Text, nullable=False, server_default=db.text("(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))"))
