@@ -1,74 +1,80 @@
-# Manual de usuario — StockManager
+# Manual de usuario - StockManager
 
-## 1. ¿Para qué sirve StockManager?
+**Trabajo Práctico Integrador | Análisis y Metodologías de Sistemas | Escuela Da Vinci**
 
-StockManager es un programa web que permite registrar productos, consultar las existencias y llevar un historial de entradas y salidas del inventario.
+## 1. Presentación
 
-Para utilizarlo es necesario que la aplicación esté iniciada y contar con un nombre de usuario y contraseña.
+StockManager permite administrar productos, consultar existencias y registrar entradas y salidas de mercadería. Se utiliza desde un navegador web. Las acciones disponibles dependen del rol de cada persona.
 
-## 2. Ingresar al sistema
+## 2. Iniciar sesión
 
-1. Abrí la dirección que te informó el equipo (en una instalación local: `http://127.0.0.1:5000`).
-2. Ingresá tu nombre de usuario y contraseña.
-3. Seleccioná **Iniciar sesión**.
+1. Abrí la dirección informada por el equipo o `http://127.0.0.1:5000` si se ejecuta localmente.
+2. Para ingresar con usuario y contraseña, completá ambos campos y presioná **Iniciar sesión**.
+3. Si se configuró Google, también podés elegir **Ingresar con Google**. Seleccioná tu cuenta y aceptá el acceso.
+4. Para utilizar Google, el administrador debe haber asociado previamente tu correo a una cuenta activa del sistema.
 
-Si los datos son incorrectos, el sistema muestra un aviso. Si no tenés cuenta, solicitale al administrador que la cree.
+Si se rechaza el ingreso, verificá tus datos y consultá al administrador. El sistema no permite el acceso a cuentas no autorizadas.
 
-## 3. Consultar productos
+## 3. Roles y permisos
 
-1. Elegí **Productos** en el menú.
-2. Revisá el listado con código, nombre, categoría, precio y stock.
-3. Para buscar uno en particular, escribí su código o nombre; también podés elegir una categoría.
-4. Presioná **Buscar** para mostrar los resultados.
+**Administrador:** administra productos, categorías y usuarios; registra movimientos; consulta y exporta reportes; consulta la cotización externa.
 
-Los productos dados de baja no se muestran en el listado principal.
+**Encargado:** consulta productos, categorías, movimientos, alertas y reportes. No puede modificar productos ni registrar movimientos.
 
-## 4. Agregar un producto (administrador)
+## 4. Consultar productos
 
-1. Entrá a **Categorías** y agregá una categoría si todavía no existe alguna activa.
+1. Elegí **Productos** en el menú principal.
+2. Revisá el listado con código, nombre, categoría, precio y stock actual.
+3. Para encontrar un producto, escribí su nombre o código, o elegí una categoría.
+4. Presioná **Buscar** para aplicar el filtro.
+
+Los productos desactivados no aparecen en el inventario vigente.
+
+## 5. Crear un producto (administrador)
+
+1. Desde **Categorías**, registrá una categoría si todavía no existe una activa.
 2. Entrá a **Productos** y elegí **Nuevo producto**.
-3. Completá código, nombre, categoría, precio, stock mínimo y stock inicial (si corresponde).
+3. Completá código, nombre, categoría, precio, stock mínimo y stock inicial si corresponde.
 4. Presioná **Guardar producto**.
 
-Si falta algún dato o el código ya existe, el sistema informa el error.
+El sistema informa si hay datos incorrectos o si el código ya se encuentra registrado.
 
-## 5. Modificar o dar de baja un producto (administrador)
+## 6. Editar y dar de baja un producto
 
-En el listado de productos, seleccioná **Editar** para modificar sus datos. Guardá los cambios al terminar.
+En el listado de **Productos**, elegí **Editar**, modificá los datos y guardá los cambios. Para retirar un producto del inventario, seleccioná **Dar de baja** y confirmá la operación. La baja conserva los movimientos históricos.
 
-Para dar de baja un producto, seleccioná **Dar de baja** y revisá la pantalla de confirmación. La baja no elimina los movimientos anteriores.
+## 7. Registrar movimientos (administrador)
 
-## 6. Registrar una entrada o salida (administrador)
-
-1. Entrá a **Movimientos** y elegí **Registrar movimiento**.
-2. Seleccioná el producto y el tipo (**Entrada** o **Salida**).
-3. Ingresá una cantidad mayor que cero y, si querés, una observación.
+1. Entrá a **Movimientos** y seleccioná **Registrar movimiento**.
+2. Elegí el producto y el tipo de operación: **Entrada** o **Salida**.
+3. Escribí una cantidad entera mayor que cero. La observación es opcional.
 4. Seleccioná **Guardar movimiento**.
 
-Si intentás registrar una salida mayor al stock disponible, aparece un mensaje de error y el movimiento no se guarda.
+Si la salida supera la cantidad disponible, el sistema no registra el movimiento.
 
-## 7. Consultar el estado del inventario
+## 8. Consultar alertas y reportes
 
-En **Inicio** podés consultar la cantidad de productos, las unidades disponibles y los productos con stock bajo o sin stock.
+**Inicio** muestra el resumen general y los productos con poco stock o sin unidades. **Reportes** muestra el inventario y permite descargar archivos CSV de productos y movimientos.
 
-En **Reportes** podés consultar un resumen y descargar el inventario o el historial de movimientos en formato CSV.
+## 9. Consultar cotización externa (administrador)
 
-## 8. Administración de usuarios (administrador)
+En el menú, elegí **Cotización**. El sistema solicita una referencia cambiaria a un servicio público. Si la consulta falla, se muestra un aviso. Esta información es orientativa: **no cambia los precios ni el stock** de ningún producto.
 
-Desde **Usuarios** podés registrar otras cuentas e indicar su rol. El administrador puede modificar información; el encargado solo puede consultar. También es posible desactivar cuentas que ya no se utilizan.
+## 10. Gestionar usuarios (administrador)
 
-## 9. Cerrar sesión
+Desde **Usuarios**, registrá una cuenta con nombre, nombre de acceso, contraseña y rol. Si esa cuenta podrá ingresar con Google, indicá su correo verificado en el campo correspondiente y guardá. También podés desactivar cuentas existentes; no se elimina el historial.
 
-Presioná **Salir** desde el encabezado cuando termines de utilizar el sistema.
+## 11. Cerrar sesión
 
-## 10. Problemas frecuentes
+Presioná **Salir** en el encabezado al terminar.
 
-| Situación | Qué hacer |
+## 12. Problemas frecuentes
+
+| Situación | Qué revisar |
 |---|---|
-| No se puede iniciar sesión | Revisá usuario y contraseña. Solicitá ayuda al administrador si el problema continúa. |
-| No aparece el botón para crear o modificar | Tu cuenta puede tener rol encargado, que tiene acceso de consulta. |
-| No permite registrar una salida | Comprobá que el producto tenga suficientes unidades. |
-| No permite crear un producto | Verificá que exista una categoría activa y que el código no esté repetido. |
-| Aparece un error al enviar un formulario | Volvé a cargar la página e intentá nuevamente. |
-
-Si la aplicación no abre, verificá con el equipo que el servidor Flask esté iniciado.
+| No puedo iniciar sesión | Revisá credenciales; si usás Google, confirmá que tu correo esté habilitado por el administrador. |
+| No tengo permiso para modificar | El rol encargado tiene acceso de consulta. |
+| No puedo registrar una salida | Verificá que haya stock suficiente. |
+| No se crea un producto | Revisá campos obligatorios, código único y categoría activa. |
+| La cotización no aparece | Puede haber un problema temporal con el servicio externo; intentá nuevamente. |
+| Después de redesplegar desaparecieron datos | En Render gratuito el archivo SQLite puede perderse; consultá al equipo. |

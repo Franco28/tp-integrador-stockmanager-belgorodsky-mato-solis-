@@ -1,10 +1,13 @@
 # Rutas principales de StockManager
 
-Todas las rutas requieren inicio de sesión, excepto `/login` y los archivos estáticos.
+Todas las rutas requieren inicio de sesión, excepto `/login`, las rutas de Google, `/health` y los archivos estáticos.
 
 | Ruta | Método | Uso | Acceso |
 |---|---|---|---|
 | `/login` | GET, POST | Inicio de sesión | Público |
+| `/login/google` | GET | Comenzar ingreso con Google | Público |
+| `/login/google/callback` | GET | Retorno de Google | Público |
+| `/health` | GET | Estado para Render | Público |
 | `/logout` | POST | Cierre de sesión | Sesión activa |
 | `/` | GET | Resumen y alertas | Administrador / encargado |
 | `/productos/` | GET | Listar y buscar productos | Administrador / encargado |
@@ -23,6 +26,8 @@ Todas las rutas requieren inicio de sesión, excepto `/login` y los archivos est
 | `/usuarios/` | GET | Listar cuentas | Administrador |
 | `/usuarios/nuevo` | POST | Crear cuenta | Administrador |
 | `/usuarios/<id>/desactivar` | POST | Desactivar cuenta | Administrador |
+| `/usuarios/<id>/google` | POST | Asociar correo Google | Administrador |
+| `/cotizaciones/` | GET | Cotización desde API externa | Administrador |
 
 `<id>` representa el identificador numérico del registro.
 
@@ -35,7 +40,8 @@ Todas las rutas requieren inicio de sesión, excepto `/login` y los archivos est
 - `app/templates/categorias/lista.html`: consulta y alta de categorías.
 - `app/templates/movimientos/`: historial y formulario de movimientos.
 - `app/templates/reportes/inicio.html`: resumen y descargas CSV.
-- `app/templates/usuarios/lista.html`: cuentas y roles.
+- `app/templates/usuarios/lista.html`: cuentas, roles y Google.
+- `app/templates/cotizaciones/inicio.html`: consulta de API externa.
 - `app/templates/error.html`: respuestas de error 400, 403 y 404.
 
 Los archivos HTML utilizan Jinja2 para mostrar información de las consultas. Los estilos están en `app/static/css/styles.css`.
