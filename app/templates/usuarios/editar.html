@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block title %}Editar usuario{% endblock %}
+{% block contenido %}
+<section class="page-heading">
+  <div>
+    <p class="eyebrow">Administración</p>
+    <h1>Editar usuario</h1>
+    <p class="page-lead">Actualizá los datos y permisos de {{ usuario.usuario }}.</p>
+  </div>
+</section>
+<section class="form-page">
+  <div class="panel">
+    <form method="post" class="form-grid">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label>Nombre
+        <input name="nombre" maxlength="120" value="{{ usuario.nombre }}" required>
+      </label>
+      <label>Usuario
+        <input name="usuario" maxlength="32" value="{{ usuario.usuario }}" required>
+      </label>
+      <label class="field-span">Rol
+        <select name="rol_id" required>
+          {% for r in roles %}
+          {% if r.nombre in ['administrador', 'encargado'] %}
+          <option value="{{ r.id }}" {% if r.id == usuario.rol_id %}selected{% endif %}>{{ r.nombre|capitalize }}</option>
+          {% endif %}
+          {% endfor %}
+        </select>
+      </label>
+      <div class="field-span">
+        <p class="helper-text">Dejá las contraseñas en blanco para conservar la actual. Si la cambiás, debe tener al menos 12 caracteres.</p>
+      </div>
+      <label for="editar-password">Nueva contraseña (opcional)
+        <span class="password-field">
+          <input id="editar-password" type="password" name="password" minlength="12" autocomplete="new-password">
+          <button class="password-toggle" type="button" aria-label="Mostrar contraseña"
+                  aria-controls="editar-password" aria-pressed="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+              <path class="password-toggle-slash" d="M3 3l18 18"></path>
+            </svg>
+          </button>
+        </span>
+      </label>
+      <label for="editar-confirmacion">Confirmar nueva contraseña
+        <span class="password-field">
+          <input id="editar-confirmacion" type="password" name="confirmacion" minlength="12" autocomplete="new-password">
+          <button class="password-toggle" type="button" aria-label="Mostrar contraseña"
+                  aria-controls="editar-confirmacion" aria-pressed="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+              <path class="password-toggle-slash" d="M3 3l18 18"></path>
+            </svg>
+          </button>
+        </span>
+      </label>
+      <div class="form-actions field-span">
+        <a class="button button--secondary" href="{{ url_for('usuarios.listar') }}">Cancelar</a>
+        <button class="button button--primary" type="submit">Guardar cambios</button>
+      </div>
+    </form>
+  </div>
+</section>
+<script src="{{ url_for('static', filename='js/password-toggle.js') }}" defer></script>
+{% endblock %}

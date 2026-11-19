@@ -70,7 +70,7 @@
         <th>Rol</th>
         <th>Google</th>
         <th>Estado</th>
-        <th>Acción</th>
+        <th>Acciones</th>
       </tr>
     </thead>
     <tbody>
@@ -90,12 +90,17 @@
         <td><span class="status-badge {{ 'status-badge--active' if u.activo else 'status-badge--inactive' }}">{{
             'Activo' if u.activo else 'Inactivo' }}</span></td>
         <td>
-          {% if u.activo and u.id != g.usuario.id %}
-          <form method="post" action="{{ url_for('usuarios.desactivar', usuario_id=u.id) }}">
+          <div class="row-actions">
+            <a class="button button--secondary button--small" href="{{ url_for('usuarios.editar', usuario_id=u.id) }}">
+              <i class="fa-solid fa-pen" aria-hidden="true"></i> Editar
+            </a>
+            {% if u.activo and u.id != g.usuario.id %}
+            <form method="post" action="{{ url_for('usuarios.desactivar', usuario_id=u.id) }}">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <button class="button button--danger button--small" type="submit">Desactivar</button>
-          </form>
-          {% else %}<span class="helper-text">—</span>{% endif %}
+            </form>
+            {% endif %}
+          </div>
         </td>
       </tr>
       {% else %}
