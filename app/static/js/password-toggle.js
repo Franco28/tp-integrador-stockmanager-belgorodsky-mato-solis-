@@ -1,7 +1,7 @@
-const passwordInput = document.getElementById("login-password");
-const passwordToggle = document.querySelector(".password-toggle");
+document.querySelectorAll(".password-toggle").forEach((passwordToggle) => {
+  const passwordInput = document.getElementById(passwordToggle.getAttribute("aria-controls"));
+  if (!passwordInput) return;
 
-if (passwordInput && passwordToggle) {
   passwordToggle.addEventListener("click", () => {
     const mostrar = passwordInput.type === "password";
     passwordInput.type = mostrar ? "text" : "password";
@@ -12,4 +12,4 @@ if (passwordInput && passwordToggle) {
     passwordToggle.setAttribute("aria-pressed", String(mostrar));
     passwordToggle.classList.toggle("is-visible", mostrar);
   });
-}
+});

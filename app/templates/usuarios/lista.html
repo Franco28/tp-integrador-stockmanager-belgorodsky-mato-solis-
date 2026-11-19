@@ -24,13 +24,38 @@
         {% for r in roles %}<option value="{{ r.id }}">{{ r.nombre|capitalize }}</option>{% endfor %}
       </select>
     </label>
-    <label>Contraseña<input type="password" name="password" minlength="12" autocomplete="new-password" required></label>
-    <label>Confirmar contraseña<input type="password" name="confirmacion" minlength="12" autocomplete="new-password"
-        required></label>
+    <label for="usuario-password">Contraseña
+      <span class="password-field">
+        <input id="usuario-password" type="password" name="password" minlength="12" autocomplete="new-password" required>
+        <button class="password-toggle" type="button" aria-label="Mostrar contraseña"
+                aria-controls="usuario-password" aria-pressed="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+            <path class="password-toggle-slash" d="M3 3l18 18"></path>
+          </svg>
+        </button>
+      </span>
+    </label>
+    <label for="usuario-confirmacion">Confirmar contraseña
+      <span class="password-field">
+        <input id="usuario-confirmacion" type="password" name="confirmacion" minlength="12"
+               autocomplete="new-password" required>
+        <button class="password-toggle" type="button" aria-label="Mostrar contraseña"
+                aria-controls="usuario-confirmacion" aria-pressed="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+            <path class="password-toggle-slash" d="M3 3l18 18"></path>
+          </svg>
+        </button>
+      </span>
+    </label>
     <div class="form-actions field-span"><button class="button button--primary" type="submit">Crear usuario</button>
     </div>
   </form>
 </section>
+<script src="{{ url_for('static', filename='js/password-toggle.js') }}" defer></script>
 <section class="panel table-wrap">
   <div class="section-heading">
     <div>
