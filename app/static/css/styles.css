@@ -71,7 +71,8 @@ button:disabled {
 .brand-mark {
   width: 44px;
   height: 44px;
-  font-size: 26px;
+  flex: 0 0 auto;
+  object-fit: contain;
 }
 .brand-copy,
 .user-details {
@@ -560,7 +561,8 @@ textarea {
 .login-aside-mark {
   width: 72px;
   height: 72px;
-  font-size: 44px;
+  flex: 0 0 auto;
+  object-fit: contain;
 }
 .login-aside h2 {
   font-size: 1.75rem;
