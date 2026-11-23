@@ -12,7 +12,7 @@ Durante el funcionamiento de una misma instancia, la información se conserva en
 
 ## Verificación del funcionamiento
 
-Para comprobar el comportamiento de la base de datos en Render, se pueden realizar las siguientes pruebas:
+Para revisar el comportamiento de la base de datos en Render, se pueden realizar las siguientes comprobaciones manuales:
 
 1. Iniciar sesión con una cuenta administradora.
 2. Registrar un producto y realizar un movimiento de stock.
@@ -20,7 +20,7 @@ Para comprobar el comportamiento de la base de datos en Render, se pueden realiz
 4. Cerrar sesión, volver a ingresar y comprobar que los registros se mantienen.
 5. Reiniciar el servicio desde Render y verificar nuevamente los datos almacenados.
 
-Estas pruebas permiten comprobar el funcionamiento de la aplicación y observar cómo se comporta el almacenamiento durante su ejecución.
+Estas comprobaciones permiten observar cómo se comporta el almacenamiento durante la ejecución de la aplicación.
 
 ## Consideraciones sobre la persistencia
 

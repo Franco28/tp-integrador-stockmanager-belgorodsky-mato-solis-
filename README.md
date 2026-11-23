@@ -20,7 +20,7 @@ StockManager es una aplicación de control de inventario hecha en Python y Flask
 - Python 3.10+, Flask, Jinja2, HTML, CSS.
 - Flask-SQLAlchemy y SQLite (incluye vistas y restricciones SQL).
 - Authlib para Google (OAuth/OIDC), Requests para la API externa.
-- `unittest` para pruebas y Gunicorn para el despliegue.
+- Gunicorn para el despliegue.
 - Trello para las historias de usuario y la planificación de Sprints.
 
 ## Instalación local
@@ -83,7 +83,7 @@ Desde **Cotización**, el administrador consulta datos de referencia usando `COT
 
 Incluimos `render.yaml` y [una guía](docs/DESPLIEGUE_RENDER.md). Para publicar hay que configurar la URL pública, credenciales Google y datos de la cuenta administradora inicial en las variables privadas del servicio. El servicio arranca con Gunicorn y sin modo debug.
 
-**Limitación de SQLite en Render gratuito:** el archivo de base de datos se puede perder al reiniciar o redesplegar si el almacenamiento es efímero. Esta versión permite una demostración del sistema, pero la persistencia duradera requiere almacenamiento apropiado. Ver [explicación y comprobaciones](docs/PERSISTENCIA_RENDER.md). No declaramos probada la publicación hasta obtener una URL real y ejecutar las pruebas correspondientes.
+**Limitación de SQLite en Render gratuito:** el archivo de base de datos se puede perder al reiniciar o redesplegar si el almacenamiento es efímero. Esta versión permite una demostración del sistema, pero la persistencia duradera requiere almacenamiento apropiado. Ver [explicación y comprobaciones](docs/PERSISTENCIA_RENDER.md). El estado de la publicación debe actualizarse cuando exista una URL real y se haya verificado el despliegue.
 
 ## Estructura principal
 
@@ -100,7 +100,6 @@ database/schema.sql  # Tablas, vistas, restricciones y roles
 scripts/             # Inicialización y creación de administrador
 instance/            # Datos locales generados, no distribuir
 docs/                # Manual, análisis y despliegue
-tests/               # Pruebas unittest
 requirements.txt
 render.yaml
 .env.example

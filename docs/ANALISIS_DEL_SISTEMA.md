@@ -63,6 +63,6 @@ Las vistas `vw_inventario`, `vw_resumen_inventario` y `vw_reporte_movimientos` f
 
 ## Trabajo por Sprints
 
-Las necesidades del sistema se escribieron como historias de usuario en Trello, cada una con criterios de aceptación. Las tarjetas avanzan por las columnas Product Backlog, Sprint Backlog (To Do), In Progress, Code Review / Testing y Done.
+Las necesidades del sistema se escribieron como historias de usuario en Trello, cada una con criterios de aceptación. Las tarjetas avanzan por las columnas de planificación, desarrollo, revisión y finalización.
 
 [Tablero Trello](https://trello.com/b/D6cUCTrH/team-rcp-gestor-de-inventario-tp-integrador)

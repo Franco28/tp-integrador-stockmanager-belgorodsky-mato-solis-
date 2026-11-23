@@ -30,10 +30,6 @@ El stock se calcula con las vistas definidas en `database/schema.sql`, a partir 
 
 `app/passwords.py` crea y comprueba hashes de contraseñas. `app/security.py` valida la sesión, el token de los formularios y los permisos según el rol. El administrador gestiona el catálogo y las cuentas; administrador y encargado pueden registrar movimientos de stock.
 
-## Pruebas
-
-La carpeta `tests/` contiene pruebas de la base de datos y de los flujos principales. Se pueden ejecutar con `python -m unittest discover -s tests -v` después de instalar las dependencias.
-
 ## Alcance técnico
 
 El proyecto utiliza herramientas trabajadas en la cursada: Python, Flask, Blueprints, Jinja2, SQLite y SQLAlchemy. No necesita microservicios ni una infraestructura adicional para el objetivo académico.

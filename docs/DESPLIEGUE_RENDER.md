@@ -72,7 +72,7 @@ Primero podemos verificar que las siguientes direcciones respondan:
 - `/login`: para acceder a la pantalla de inicio de sesión.
 - `/login/google/callback`: dirección utilizada por Google para completar la autenticación. Se debe comprobar mediante el flujo de inicio de sesión con Google, no ingresando directamente.
 
-Después, realizamos algunas pruebas desde la aplicación:
+Después, revisamos estas funciones desde la aplicación:
 
 1. Iniciar sesión con el administrador.
 2. Comprobar el ingreso mediante Google con una cuenta autorizada.
@@ -80,10 +80,10 @@ Después, realizamos algunas pruebas desde la aplicación:
 4. Registrar una entrada y una salida de stock.
 5. Consultar el inventario y verificar las cantidades disponibles.
 6. Consultar los reportes.
-7. Probar la consulta de cotización mediante la API externa.
+7. Consultar la cotización mediante la API externa.
 8. Cerrar sesión y volver a ingresar.
 
-Estas pruebas nos permiten verificar que las funcionalidades principales también trabajen correctamente desde Render.
+Estas comprobaciones permiten verificar que las funcionalidades principales trabajen correctamente desde Render.
 
 ## 6. Consideraciones sobre SQLite en Render
 
@@ -93,16 +93,16 @@ En el servicio gratuito de Render, el almacenamiento es efímero. Por este motiv
 
 Esto no afecta la lógica del sistema, pero sí representa una limitación para conservar los registros a largo plazo.
 
-En el archivo [PERSISTENCIA_RENDER.md](PERSISTENCIA_RENDER.md) explicamos con más detalle esta situación y las pruebas que podemos realizar para verificarla.
+En el archivo [PERSISTENCIA_RENDER.md](PERSISTENCIA_RENDER.md) explicamos con más detalle esta situación y las comprobaciones manuales disponibles.
 
 Si el sistema se utilizara en un entorno real, sería necesario contar con una alternativa de almacenamiento persistente.
 
 ## 7. Preparación de la entrega
 
-Cuando la aplicación esté publicada y hayamos realizado las pruebas, debemos guardar la URL real de Render en el archivo TXT correspondiente.
+Cuando la aplicación esté publicada y hayamos verificado su funcionamiento, debemos guardar la URL real de Render en el archivo TXT correspondiente.
 
 También tenemos que comprobar que el proyecto pueda ejecutarse localmente y que se encuentren incluidos los archivos necesarios, como `requirements.txt`, `.env.example` y la documentación.
 
-Por último, debemos registrar los resultados de las pruebas realizadas, especialmente las relacionadas con el inicio de sesión, el funcionamiento del inventario y la persistencia de los datos.
+Por último, debemos registrar el resultado de la revisión, especialmente lo relacionado con el inicio de sesión, el funcionamiento del inventario y la persistencia de los datos.
 
 Con esto dejamos documentado cómo realizamos el despliegue de StockManager y qué aspectos tuvimos en cuenta para su funcionamiento en Render.
