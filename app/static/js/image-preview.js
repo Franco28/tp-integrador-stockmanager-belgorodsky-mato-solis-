@@ -93,4 +93,10 @@
       showOriginalOrEmpty();
     }
   });
+
+  if (removeImageInput?.checked) {
+    showMessage("Sin imagen");
+  } else if (imageUrlInput?.value.trim()) {
+    previewImageUrl();
+  }
 })();

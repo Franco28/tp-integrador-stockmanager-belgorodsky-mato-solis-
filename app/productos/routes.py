@@ -168,7 +168,19 @@ def nuevo():
             _eliminar_imagen_segura(imagen_guardada)
             current_app.logger.exception("No se pudo guardar el producto en la base de datos")
             flash("No se pudo guardar el producto", "error")
-    return render_template("productos/formulario.html", producto=None, categorias=_categorias())
+    form_data = request.form.to_dict() if request.method == "POST" else {}
+    requiere_reseleccionar_imagen = bool(
+        request.method == "POST"
+        and request.files.get("imagen")
+        and request.files["imagen"].filename
+    )
+    return render_template(
+        "productos/formulario.html",
+        producto=None,
+        categorias=_categorias(),
+        form_data=form_data,
+        requiere_reseleccionar_imagen=requiere_reseleccionar_imagen,
+    )
 
 
 @bp.route("/<int:producto_id>/editar", methods=["GET", "POST"])
@@ -218,7 +230,19 @@ def editar(producto_id):
             _eliminar_imagen_segura(imagen_guardada)
             current_app.logger.exception("No se pudo actualizar el producto en la base de datos")
             flash("No se pudo actualizar el producto", "error")
-    return render_template("productos/formulario.html", producto=producto, categorias=_categorias())
+    form_data = request.form.to_dict() if request.method == "POST" else {}
+    requiere_reseleccionar_imagen = bool(
+        request.method == "POST"
+        and request.files.get("imagen")
+        and request.files["imagen"].filename
+    )
+    return render_template(
+        "productos/formulario.html",
+        producto=producto,
+        categorias=_categorias(),
+        form_data=form_data,
+        requiere_reseleccionar_imagen=requiere_reseleccionar_imagen,
+    )
 
 
 @bp.get("/<int:producto_id>/confirmar-baja")

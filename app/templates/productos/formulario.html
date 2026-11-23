@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}{{ 'Editar' if producto else 'Nuevo' }} producto{% endblock %}
 {% block contenido %}
+{% set datos = form_data or {} %}
 <section class="form-page">
   <div class="page-heading">
     <div>
@@ -18,14 +19,17 @@
     {% else %}
     <form method="post" class="form-grid" enctype="multipart/form-data">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      {% if requiere_reseleccionar_imagen %}
+      <p class="notice notice--error field-span">Volvé a seleccionar el archivo de imagen para adjuntarlo nuevamente.</p>
+      {% endif %}
       <label>Código
-        <input name="codigo" maxlength="40" value="{{ producto.codigo if producto else '' }}" required>
+        <input name="codigo" maxlength="40" value="{{ datos.get('codigo', producto.codigo if producto else '') }}" required>
       </label>
       <label>Nombre
-        <input name="nombre" maxlength="120" value="{{ producto.nombre if producto else '' }}" required>
+        <input name="nombre" maxlength="120" value="{{ datos.get('nombre', producto.nombre if producto else '') }}" required>
       </label>
       <label class="field-span">Descripción
-        <textarea name="descripcion" maxlength="500">{{ producto.descripcion or '' if producto else '' }}</textarea>
+        <textarea name="descripcion" maxlength="500">{{ datos.get('descripcion', producto.descripcion or '' if producto else '') }}</textarea>
       </label>
       <div class="field-span image-upload-field">
         <div>
@@ -34,7 +38,9 @@
         </div>
         <div class="image-upload-layout">
           <div class="image-preview" id="image-preview">
-            {% if producto and producto.imagen %}
+            {% if datos.get('quitar_imagen') == '1' %}
+            <span class="image-preview-placeholder"><i class="fa-solid fa-box-open" aria-hidden="true"></i><span>Sin imagen</span></span>
+            {% elif producto and producto.imagen %}
             <img src="{{ producto.imagen if producto.imagen.startswith('https://') else url_for('static', filename=producto.imagen) }}" alt="Imagen actual de {{ producto.nombre }}">
             {% else %}
             <span class="image-preview-placeholder"><i class="fa-solid fa-box-open" aria-hidden="true"></i><span>Sin imagen</span></span>
@@ -46,11 +52,11 @@
             <label for="product-image-url">O pegá la URL de la imagen</label>
             <input id="product-image-url" type="url" name="imagen_url" maxlength="2048"
                    placeholder="https://sitio.com/imagen.jpg"
-                   value="{{ producto.imagen if producto and producto.imagen and producto.imagen.startswith('https://') else '' }}">
+                   value="{{ datos.get('imagen_url', producto.imagen if producto and producto.imagen and producto.imagen.startswith('https://') else '') }}">
             <span class="field-hint">Las imágenes remotas se cargan directamente desde el sitio de origen.</span>
             {% if producto and producto.imagen %}
             <label class="checkbox-label">
-              <input type="checkbox" name="quitar_imagen" value="1">
+              <input type="checkbox" name="quitar_imagen" value="1" {% if datos.get('quitar_imagen') == '1' %}checked{% endif %}>
               Quitar imagen actual
             </label>
             {% endif %}
@@ -60,23 +66,23 @@
       <label>Categoría
         <select name="categoria_id" required>
           {% for c in categorias %}
-          <option value="{{ c.id }}" {% if producto and producto.categoria_id==c.id %}selected{% endif %}>{{ c.nombre }}
+          <option value="{{ c.id }}" {% if datos.get('categoria_id', producto.categoria_id if producto else '')|string == c.id|string %}selected{% endif %}>{{ c.nombre }}
           </option>
           {% endfor %}
         </select>
       </label>
       <label>Precio (ARS)
         <input name="precio" inputmode="decimal"
-          value="{{ '%0.2f'|format(producto.precio_centavos / 100) if producto else '0.00' }}" required>
+          value="{{ datos.get('precio', '%0.2f'|format(producto.precio_centavos / 100) if producto else '0.00') }}" required>
         <span class="field-hint">Hasta 2 decimales</span>
       </label>
       <label class="{{ 'field-span' if producto else '' }}">Stock mínimo
-        <input type="number" name="stock_minimo" min="0" value="{{ producto.stock_minimo if producto else 0 }}"
+        <input type="number" name="stock_minimo" min="0" value="{{ datos.get('stock_minimo', producto.stock_minimo if producto else 0) }}"
           required>
       </label>
       {% if not producto %}
       <label>Stock inicial
-        <input type="number" name="stock_inicial" min="0" value="0" required>
+        <input type="number" name="stock_inicial" min="0" value="{{ datos.get('stock_inicial', 0) }}" required>
       </label>
       {% endif %}
       <div class="form-actions field-span">
