@@ -19,9 +19,6 @@
     {% else %}
     <form method="post" class="form-grid" enctype="multipart/form-data">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-      {% if requiere_reseleccionar_imagen %}
-      <p class="notice notice--error field-span">Volvé a seleccionar el archivo de imagen para adjuntarlo nuevamente.</p>
-      {% endif %}
       <label>Código
         <input name="codigo" maxlength="40" value="{{ datos.get('codigo', producto.codigo if producto else '') }}" required>
       </label>

@@ -174,12 +174,13 @@ def nuevo():
         and request.files.get("imagen")
         and request.files["imagen"].filename
     )
+    if requiere_reseleccionar_imagen:
+        flash("Volvé a seleccionar el archivo de imagen para adjuntarlo nuevamente.", "warning")
     return render_template(
         "productos/formulario.html",
         producto=None,
         categorias=_categorias(),
         form_data=form_data,
-        requiere_reseleccionar_imagen=requiere_reseleccionar_imagen,
     )
 
 
@@ -236,12 +237,13 @@ def editar(producto_id):
         and request.files.get("imagen")
         and request.files["imagen"].filename
     )
+    if requiere_reseleccionar_imagen:
+        flash("Volvé a seleccionar el archivo de imagen para adjuntarlo nuevamente.", "warning")
     return render_template(
         "productos/formulario.html",
         producto=producto,
         categorias=_categorias(),
         form_data=form_data,
-        requiere_reseleccionar_imagen=requiere_reseleccionar_imagen,
     )
 
 
